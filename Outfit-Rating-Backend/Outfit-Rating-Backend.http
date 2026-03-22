@@ -1,0 +1,6 @@
+@Outfit_Rating_Backend_HostAddress = http://localhost:5033
+
+GET {{Outfit_Rating_Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
