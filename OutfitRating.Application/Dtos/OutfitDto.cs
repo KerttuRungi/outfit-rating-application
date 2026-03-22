@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace OutfitRating.Application.Dtos
 {
-    internal class OutfitDto
+    public class OutfitDto
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public double AverageRating { get; set; }
+        public int RatingsCount { get; set; }
+        //public List<IFormFile>? Images { get; set; } = new();
+        //public List<string>? ImageUrls { get; set; } = new();
+        //to later implement image upload
     }
 }

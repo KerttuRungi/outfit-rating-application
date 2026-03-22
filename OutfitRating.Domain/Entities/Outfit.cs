@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutfitRating.Domain.Domain
+namespace OutfitRating.Domain.Entities
 {
     public class Outfit
     {
