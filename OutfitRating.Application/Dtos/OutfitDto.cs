@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace OutfitRating.Application.Dtos
 {
@@ -13,8 +14,7 @@ namespace OutfitRating.Application.Dtos
         public string Description { get; set; }
         public double AverageRating { get; set; }
         public int RatingsCount { get; set; }
-        //public List<IFormFile>? Images { get; set; } = new();
-        //public List<string>? ImageUrls { get; set; } = new();
-        //to later implement image upload
+        public List<IFormFile>? Images { get; set; } = new();
+        public List<string>? ImageUrls { get; set; } = new();
     }
 }

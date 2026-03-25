@@ -16,6 +16,7 @@ namespace Outfit_Rating_Backend
 
             builder.Services.AddControllers();
             builder.Services.AddScoped<IOutfitRatingService, OutfitRatingService>();
+            builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -35,6 +36,8 @@ namespace Outfit_Rating_Backend
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 

@@ -65,7 +65,7 @@ namespace Outfit_Rating_Backend.Controllers
         }
 
         [HttpPut("{Id:guid}")]
-        public async Task<IActionResult> UpdateOutfitAsync( Guid Id, OutfitDto dto)
+        public async Task<IActionResult> UpdateOutfitAsync(Guid Id, [FromForm] OutfitDto dto)
         {
             dto.Id = Id;
             var updatedOutfit = await _outfitRatingService.UpdateOutfitAsync(dto);
@@ -77,10 +77,9 @@ namespace Outfit_Rating_Backend.Controllers
         }
 
         [HttpDelete("{Id:guid}")]
-        public async Task<IActionResult> DeleteOutfitAsync( Guid Id, OutfitDto dto)
+        public async Task<IActionResult> DeleteOutfitAsync(Guid Id)
         {
-            dto.Id = Id;
-            var deletedOutfit = await _outfitRatingService.DeleteOutfitAsync(dto);
+            var deletedOutfit = await _outfitRatingService.DeleteOutfitAsync(new OutfitDto { Id = Id }); //Only require id for delete
             if (deletedOutfit == null)
             {
                 return BadRequest("Could not delete outfit");
