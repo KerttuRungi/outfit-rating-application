@@ -17,6 +17,7 @@ namespace Outfit_Rating_Backend
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddScoped<IRatingService, RatingService>();
             builder.Services.AddScoped<IOutfitService, OutfitService>();
             builder.Services.AddScoped<IFileService, FileService>();
 
@@ -27,14 +28,23 @@ namespace Outfit_Rating_Backend
             builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
                 .AddEntityFrameworkStores<AppDbContext>();
 
+            //frontend cors
+            builder.Services.AddCors(options => {
+                options.AddPolicy("AllowNextJS", policy => {
+                    policy.WithOrigins("http://localhost:3000") 
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             builder.Services.Configure<IdentityOptions>(options =>
             {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 3;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
-                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                //options.SignIn.RequireConfirmedAccount = true;
             });
 
             builder.Services.AddAuthorization();
@@ -54,17 +64,19 @@ namespace Outfit_Rating_Backend
                 app.MapOpenApi();
             }
 
-            app.MapIdentityApi<ApplicationUser>();
 
-            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseCors("AllowNextJS");
+
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.MapIdentityApi<ApplicationUser>();
 
             app.MapControllers();
 

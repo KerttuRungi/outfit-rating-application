@@ -16,5 +16,7 @@ namespace OutfitRating.Infrastructure
         {
         }
         public DbSet<Outfit> OutfitRating { get; set; } //Outfit entitys table not to be confused with ratings
+        public DbSet<Rating> Ratings { get; set; }
+
     }
 }

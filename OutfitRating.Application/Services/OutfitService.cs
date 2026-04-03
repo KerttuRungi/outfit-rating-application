@@ -11,11 +11,11 @@ using OutfitRating.Infrastructure;
 
 namespace OutfitRating.Application.Services
 {
-    public class OutfitRatingService : IOutfitRatingService
+    public class OutfitService : IOutfitService
     {
         private readonly AppDbContext _context;
         private readonly IFileService _fileService;
-        public OutfitRatingService
+        public OutfitService
         (
             AppDbContext context,
             IFileService fileService

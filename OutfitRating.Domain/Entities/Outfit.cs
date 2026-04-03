@@ -17,6 +17,6 @@ namespace OutfitRating.Domain.Entities
         public DateTime UpdatedAt { get; set; }
 
         public List<OutfitImages> Images { get; set; } = new();
-        //to later implement image upload
+        public List<Rating> Ratings { get; set; } = new();
     }
 }

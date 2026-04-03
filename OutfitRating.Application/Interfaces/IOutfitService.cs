@@ -7,7 +7,7 @@ using OutfitRating.Application.Dtos;
 
 namespace OutfitRating.Application.Interfaces
 {
-    public interface IOutfitRatingService
+    public interface IOutfitService
     {
        Task<IEnumerable<OutfitDto>> GetAllOutfitsAsync();
         Task<OutfitDto> GetOutfitByIdAsync(Guid Id);
