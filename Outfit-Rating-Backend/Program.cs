@@ -1,5 +1,7 @@
 
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using OutfitRating.Application.Interfaces;
 using OutfitRating.Application.Services;
@@ -28,6 +30,16 @@ namespace Outfit_Rating_Backend
             builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
                 .AddEntityFrameworkStores<AppDbContext>();
 
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("fixed", opt =>
+                {
+                    opt.PermitLimit = 5;
+                    opt.Window = TimeSpan.FromSeconds(12);
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    opt.QueueLimit = 5;
+                });
+            });
             //frontend cors
             builder.Services.AddCors(options => {
                 options.AddPolicy("AllowNextJS", policy => {
@@ -77,6 +89,9 @@ namespace Outfit_Rating_Backend
             app.UseAuthorization();
 
             app.MapIdentityApi<ApplicationUser>();
+
+
+            app.UseRateLimiter();
 
             app.MapControllers();
 
