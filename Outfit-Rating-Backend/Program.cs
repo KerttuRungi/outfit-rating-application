@@ -30,6 +30,16 @@ namespace Outfit_Rating_Backend
             builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
                 .AddEntityFrameworkStores<AppDbContext>();
 
+            // Configure cookie settings for authentication
+            // Frontend is on a different port, so cross-origin cookies need to be enabled
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "AppCookie";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.None; // Required for cross-origin
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Required if SameSite is None
+            });
+
             builder.Services.AddRateLimiter(options =>
             {
                 options.AddFixedWindowLimiter("fixed", opt =>
@@ -45,7 +55,8 @@ namespace Outfit_Rating_Backend
                 options.AddPolicy("AllowNextJS", policy => {
                     policy.WithOrigins("http://localhost:3000") 
                           .AllowAnyHeader()
-                          .AllowAnyMethod();
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                 });
             });
 
@@ -56,7 +67,7 @@ namespace Outfit_Rating_Backend
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireLowercase = true;
-                //options.SignIn.RequireConfirmedAccount = true;
+                //options.SignIn.RequireConfirmedAccount = false;
             });
 
             builder.Services.AddAuthorization();
@@ -88,8 +99,7 @@ namespace Outfit_Rating_Backend
 
             app.UseAuthorization();
 
-            app.MapIdentityApi<ApplicationUser>();
-
+            app.MapGroup("/auth").MapIdentityApi<ApplicationUser>();
 
             app.UseRateLimiter();
 

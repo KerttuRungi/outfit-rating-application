@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using OutfitRating.Application.Dtos;
@@ -11,6 +12,7 @@ namespace Outfit_Rating_Backend.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableRateLimiting("fixed")]
+    [Authorize]
     public class OutfitRatingController : ControllerBase
     {
         private readonly AppDbContext _context;
