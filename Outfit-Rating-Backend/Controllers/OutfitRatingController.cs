@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Authorization;
 using OutfitRating.Application.Dtos;
 using OutfitRating.Application.Interfaces;
 using OutfitRating.Application.Services;
@@ -26,13 +27,13 @@ namespace Outfit_Rating_Backend.Controllers
             _ratingService = ratingService;
         }
 
-        // Retrieves the current user's ID from claims
-        private Guid GetUserId()
+        // Retrieves the current user's ID from claims (string from Identity)
+        private string GetUserId()
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
                 throw new UnauthorizedAccessException("User ID claim not found.");
-            return Guid.Parse(userIdClaim.Value);
+            return userIdClaim.Value;
         }
 
         [HttpGet]
@@ -76,13 +77,27 @@ namespace Outfit_Rating_Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOutfitAsync([FromForm] OutfitDto dto)
         {
-            var createdOutfit = await _outfitService.CreateOutfitAsync(dto);
+            var creatorId = GetUserId();
+            var createdOutfit = await _outfitService.CreateOutfitAsync(dto, creatorId);
             return Ok(createdOutfit);
         }
 
         [HttpPut("{Id:guid}")]
         public async Task<IActionResult> UpdateOutfitAsync(Guid Id, [FromForm] OutfitDto dto)
         {
+            var userId = GetUserId();
+
+            var outfit = await _context.OutfitRating.FindAsync(Id);
+            if (outfit == null)
+            {
+                return NotFound($"Outfit with ID {Id} not found.");
+            }
+
+            if (outfit.CreatorId != userId)
+            {
+                return Forbid();
+            }
+
             dto.Id = Id;
             var updatedOutfit = await _outfitService.UpdateOutfitAsync(dto);
             if (updatedOutfit == null)
@@ -95,6 +110,19 @@ namespace Outfit_Rating_Backend.Controllers
         [HttpDelete("{Id:guid}")]
         public async Task<IActionResult> DeleteOutfitAsync(Guid Id)
         {
+            var userId = GetUserId();
+
+            var outfit = await _context.OutfitRating.FindAsync(Id);
+            if (outfit == null)
+            {
+                return NotFound($"Outfit with ID {Id} not found.");
+            }
+
+            if (outfit.CreatorId != userId)
+            {
+                return Forbid();
+            }
+
             var deletedOutfit = await _outfitService.DeleteOutfitAsync(new OutfitDto { Id = Id }); //Only require id for delete
             if (deletedOutfit == null)
             {

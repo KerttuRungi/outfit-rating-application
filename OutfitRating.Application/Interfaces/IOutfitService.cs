@@ -11,7 +11,7 @@ namespace OutfitRating.Application.Interfaces
     {
        Task<IEnumerable<OutfitDto>> GetAllOutfitsAsync();
         Task<OutfitDto> GetOutfitByIdAsync(Guid Id);
-        Task<OutfitDto> CreateOutfitAsync(OutfitDto dto);
+        Task<OutfitDto> CreateOutfitAsync(OutfitDto dto, string creatorId);
         Task<OutfitDto> UpdateOutfitAsync(OutfitDto dto);
         Task<OutfitDto> DeleteOutfitAsync(OutfitDto dto);
     }
