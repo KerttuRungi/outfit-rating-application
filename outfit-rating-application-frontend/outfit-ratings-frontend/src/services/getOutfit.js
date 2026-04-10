@@ -1,5 +1,5 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const OUTFITS_URL = `${API_URL}/api/OutfitRating`;
+const OUTFITS_URL = `/api/OutfitRating`;
 
 import { apiRequest } from "@/lib/apiClient";
 
