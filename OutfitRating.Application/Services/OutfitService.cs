@@ -63,7 +63,7 @@ namespace OutfitRating.Application.Services
                 ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>()
             };
         }
-        public async Task<OutfitDto> CreateOutfitAsync(OutfitDto dto)
+        public async Task<OutfitDto> CreateOutfitAsync(OutfitDto dto, string creatorId)
         {
             var uploadedFiles = new List<string>();
 
@@ -75,6 +75,7 @@ namespace OutfitRating.Application.Services
             var o = new Outfit
             {
                 Id = Guid.NewGuid(),
+                CreatorId = creatorId,
                 Name = dto.Name,
                 Description = dto.Description,
                 AverageRating = dto.AverageRating,

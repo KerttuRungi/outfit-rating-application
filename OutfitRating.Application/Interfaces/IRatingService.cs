@@ -9,6 +9,6 @@ namespace OutfitRating.Application.Interfaces
     public interface IRatingService
     {
         Task<(double average, int count)> GetRatingStats(Guid outfitId);
-        Task RateOutfit(Guid userId, Guid outfitId, int value);
+        Task RateOutfit(string userId, Guid outfitId, int value);
     }
 }

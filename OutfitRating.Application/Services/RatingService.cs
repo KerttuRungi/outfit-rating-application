@@ -13,15 +13,12 @@ namespace OutfitRating.Application.Services
     public class RatingService : IRatingService
     {
         private readonly AppDbContext _context;
-        private readonly IFileService _fileService;
         public RatingService
         (
-            AppDbContext context,
-            IFileService fileService
+            AppDbContext context
         )
         {
             _context = context;
-            _fileService = fileService;
         }
         public async Task<(double average, int count)> GetRatingStats(Guid outfitId)
         {
@@ -37,7 +34,7 @@ namespace OutfitRating.Application.Services
 
             return (avg, count);
         }
-        public async Task RateOutfit(Guid userId, Guid outfitId, int value)
+        public async Task RateOutfit(string userId, Guid outfitId, int value)
         {
             if (value < 1 || value > 5)
                 throw new Exception("Rating must be between 1 and 5");
