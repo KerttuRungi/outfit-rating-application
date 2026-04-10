@@ -11,7 +11,7 @@ export async function createOutfit(outfitData) {
 
   // Image handling: [Fromform] on backend
   if (outfitData.imageFile) {
-    formData.append("ImageFile", outfitData.imageFile);
+    formData.append("Images", outfitData.imageFile);
   }
 
   return apiRequest(OUTFITS_URL, {

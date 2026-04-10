@@ -3,6 +3,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export async function apiRequest(endpoint, options = {}, cookieHeader = null) {
   const headers = { ...options.headers };
 
+  // Automatically set Content-Type for JSON bodies
+  if (options.body && !(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
   // Attach cookies for server-side components/pages
   if (cookieHeader) {
     headers["Cookie"] = cookieHeader;
