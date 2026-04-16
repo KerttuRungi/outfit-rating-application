@@ -11,8 +11,8 @@ export default function HomePage() {
 
   useEffect(() => {
     let mounted = true;
-    getCurrentUser().then((u) => {
-      if (mounted && u) setUser(u);
+    getCurrentUser().then((user) => {
+      if (mounted && user) setUser(user);
     });
     return () => {
       mounted = false;

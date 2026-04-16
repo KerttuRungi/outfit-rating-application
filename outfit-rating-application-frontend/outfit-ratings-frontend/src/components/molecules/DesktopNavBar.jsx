@@ -3,23 +3,30 @@ import React, { useEffect, useState } from "react";
 import menuItems from "../../lib/menuItems";
 import Link from "next/link";
 import { Star, User } from "lucide-react";
-import { getCurrentUser, logout } from "@/services/authService"; // Added logout import
-import { useRouter } from "next/navigation"; // To redirect after logout
+import { getCurrentUser, logout } from "@/services/authService";
+import { useRouter, usePathname } from "next/navigation"; // To redirect after logout
 
 export default function DesktopNavBar() {
   const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     let mounted = true;
-    getCurrentUser().then((user) => {
-      if (mounted && user) setUser(user);
-    });
+    //fetch user before rendering (could be made a global hook)
+    async function fetchUser() {
+      const currentUser = await getCurrentUser();
+      if (mounted) {
+        setUser(currentUser);
+      }
+    }
+
+    fetchUser();
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {
