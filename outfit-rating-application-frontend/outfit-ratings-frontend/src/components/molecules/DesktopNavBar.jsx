@@ -1,24 +1,36 @@
-// src/components/molecules/DesktopNavBar.jsx
 "use client";
 import React, { useEffect, useState } from "react";
 import menuItems from "../../lib/menuItems";
 import Link from "next/link";
 import { Star, User } from "lucide-react";
-import { getCurrentUser } from "@/services/authService";
+import { getCurrentUser, logout } from "@/services/authService"; // Added logout import
+import { useRouter } from "next/navigation"; // To redirect after logout
 
 export default function DesktopNavBar() {
   const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     let mounted = true;
-    getCurrentUser().then((u) => {
-      if (mounted && u) setUser(u);
+    getCurrentUser().then((user) => {
+      if (mounted && user) setUser(user);
     });
     return () => {
       mounted = false;
     };
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUser(null); // Clear local state
+      router.push("/");
+      router.refresh(); // Refresh the page to clear any cached user data
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
   return (
     <nav className="w-full">
@@ -27,7 +39,6 @@ export default function DesktopNavBar() {
           <div className="flex items-center">
             <Link
               href="/"
-              aria-label="home"
               className="inline-flex items-center justify-center text-white"
             >
               <Star size={20} className="hover-spin" />
@@ -47,35 +58,58 @@ export default function DesktopNavBar() {
 
           <div className="flex items-center gap-3 justify-self-end">
             <div className="flex items-center gap-3">
-              <Link
-                href="/auth/login"
-                className="inline-flex items-center h-8 px-3 rounded-full bg-[var(--dpink)] hover:bg-[var(--dpurple-10)] hover:text-[var(--lpink)] text-white"
-              >
-                Login
-              </Link>
-              <Link
-                href="/auth/register"
-                className="inline-flex items-center h-8 px-3 rounded-full bg-[var(--dpink)] hover:bg-[var(--dpurple-10)] hover:text-[var(--lpink)] text-white"
-              >
-                Register
-              </Link>
+              {!user ? (
+                <>
+                  <Link
+                    href="/auth/login"
+                    className="inline-flex items-center h-8 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    className="inline-flex items-center h-8 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  >
+                    Register
+                  </Link>
+                </>
+              ) : (
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center h-8 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                >
+                  Logout
+                </button>
+              )}
             </div>
 
-            <div
+            {/* Add user profile logic */}
+            {/* <div
               className="relative"
               onMouseEnter={() => setShowMenu(true)}
               onMouseLeave={() => setShowMenu(false)}
             >
               <button
                 type="button"
-                aria-label="profile"
-                aria-haspopup="true"
-                aria-expanded={showMenu}
-                className="inline-flex items-center justify-center h-10 w-10 rounded-full border-2 border-white/20 bg-[var(--dpink)]"
+                className={`inline-flex items-center justify-center h-10 w-10 rounded-full border-2 transition-all ${user ? "border-green-400" : "border-white/20"} bg-[var(--dpink)]`}
               >
-                <User size={18} />
+                <User size={18} className="text-white" />
               </button>
-            </div>
+
+              {showMenu && user && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-gray-800">
+                  <div className="px-4 py-2 border-b text-xs text-gray-500 truncate">
+                    {user.email}
+                  </div>
+                  <Link
+                    href="/profile"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                  >
+                    My Profile
+                  </Link>
+                </div>
+              )}
+            </div> */}
           </div>
         </div>
       </div>
