@@ -18,7 +18,7 @@ namespace OutfitRating.Application.Services
             _webHostEnviorment = webHostEnviorment;
         }
         // Allowed file types
-        private static readonly string[] AllowedExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
+        private static readonly string[] AllowedExtensions = { ".jpg", ".png" };
         private const long MaxFileSize = 3 * 1024 * 1024; // 3 MB
 
         // Helper method to validate file type and size
