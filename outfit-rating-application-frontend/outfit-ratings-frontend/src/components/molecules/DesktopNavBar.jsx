@@ -41,7 +41,7 @@ export default function DesktopNavBar() {
 
   return (
     <nav className="w-full">
-      <div className="bg-[var(--dpink-70)] backdrop-blur-sm">
+      <div className="bg-[var(--dpink)] backdrop-blur-sm">
         <div className="px-5 mx-auto grid grid-cols-3 items-center h-14 shadow-2xl">
           <div className="flex items-center">
             <Link
