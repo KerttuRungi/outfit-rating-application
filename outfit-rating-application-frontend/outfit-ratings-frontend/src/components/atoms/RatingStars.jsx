@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Star, Loader2 } from "lucide-react"; // Added Loader2 for feedback
+import { Star, Loader2 } from "lucide-react"; //loader, will update in future
 import { rateOutfit } from "@/services/ratingService";
 
 export default function RatingStars({
@@ -19,10 +19,7 @@ export default function RatingStars({
 
     setIsSubmitting(true);
     try {
-      // 1. Call the backend
       await rateOutfit(outfitId, v);
-
-      // 2. Notify the parent component to update the UI (average/count)
       if (onChange) {
         onChange(v);
       }
@@ -48,7 +45,7 @@ export default function RatingStars({
           <button
             key={starValue}
             type="button"
-            disabled={isSubmitting} // Disable while loading
+            disabled={isSubmitting}
             onClick={() => handleClick(starValue)}
             onMouseEnter={() =>
               !readOnly && !isSubmitting && setHover(starValue)
@@ -63,20 +60,18 @@ export default function RatingStars({
               readOnly || isSubmitting ? "cursor-default" : "cursor-pointer"
             }`}
           >
-            {/* Show a small spinner if this specific button was clicked, or just the Star */}
             <Star
               size={size}
               className={`transition-colors ${
-                isActive ? "text-[#F02692]" : "text-gray-300"
+                isActive ? "text-[var(--dpink)]" : "text-gray-400"
               } ${isSubmitting ? "opacity-50" : "opacity-100"}`}
             />
           </button>
         );
       })}
 
-      {/* Optional: Visual indicator that it's saving */}
       {isSubmitting && (
-        <Loader2 size={14} className="animate-spin text-[#F02692] ml-1" />
+        <Loader2 size={14} className="animate-spin text-[var(--dpink)] ml-1" />
       )}
     </div>
   );

@@ -1,32 +1,26 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import OutfitPostCard from "./OutfitCard";
-import { getAllOutfits } from "../../services/outfitService";
+import React from "react";
+import OutfitPostCard from "../molecules/OutfitCard";
 
-export default function OutfitCardList() {
-	const [outfits, setOutfits] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
-
-	useEffect(() => {
-		setLoading(true);
-		getAllOutfits()
-			.then((data) => setOutfits(data || []))
-			.catch((err) => setError(err.message))
-			.finally(() => setLoading(false));
-	}, []);
-
-	if (loading) return <div className="text-center p-4">Loading outfits...</div>;
-	if (error) return <div className="text-center p-4 text-red-600">Error: {error}</div>;
-
-	return (
-		<div className="grid grid-cols-12 gap-6 p-6">
-			{outfits.map((outfit, i) => (
-				<div key={outfit.outfitId || outfit.id || i} className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
-					<OutfitPostCard outfit={outfit} eager={i === 0} />
-				</div>
-			))}
-		</div>
-	);
+export default function OutfitCardList({ outfits }) {
+  if (!outfits) return <div className="text-center p-4">No outfits found.</div>;
+  return (
+    <div className="px-6 mx-auto max-w-7xl">
+      <div className="grid grid-cols-12 gap-6 py-6">
+        {outfits.map((outfit, i) => (
+          <div
+            key={outfit.outfitId || outfit.id || i}
+            className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 h-full"
+          >
+            <OutfitPostCard
+              outfit={outfit}
+              eager={i === 0}
+              outfitId={outfit.outfitId || outfit.id}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
