@@ -1,13 +1,25 @@
 @import "tailwindcss";
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
 }
 
 :root {
-  --background: linear-gradient(to bottom, #17010D 0%, #F02692 100%);
+  --background: linear-gradient(to bottom, #17010d 0%, #f02692 100%);
   --foreground: #171717;
+  /* Theme color vars */
+  --dpink: #f92a98;
+  --lpink: #e7a2ca;
+  --dpurple: #400424;
+  --dpink-70: rgba(249, 42, 152, 0.7);
+  --dpurple-10: rgba(64, 4, 36, 0.1);
+  --gradient-down: linear-gradient(
+    to bottom,
+    var(--dpurple) 0%,
+    var(--dpink) 100%
+  );
 }
 
 @theme inline {
@@ -19,7 +31,7 @@ html, body {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: linear-gradient(to bottom, #17010D 0%, #F02692 100%);
+    --background: linear-gradient(to bottom, #17010d 0%, #f02692 100%);
     --foreground: #ededed;
   }
 }
@@ -35,3 +47,28 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Card hover utility - use with component root to add lift, scale and shadow */
+.card-hover {
+  @apply transform-gpu transition-transform duration-200 will-change-transform bg-white;
+}
+.card-hover:hover {
+  @apply -translate-y-2 scale-100 shadow-2xl z-10;
+}
+
+.hover-spin {
+  display: inline-block;
+  transform-origin: center center;
+  will-change: transform;
+}
+.hover-spin:hover {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
