@@ -14,6 +14,7 @@ namespace Outfit_Rating_Backend.Controllers
     [ApiController]
     [EnableRateLimiting("fixed")]
     [Authorize]
+
     public class OutfitRatingController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -131,14 +132,22 @@ namespace Outfit_Rating_Backend.Controllers
             return Ok(deletedOutfit);
         }
 
-        [HttpPost("rating")]
-        public async Task<IActionResult> Rate(Guid outfitId, int value)
+        [HttpPost("{Id:guid}/rating")]
+        public async Task<IActionResult> Rate([FromRoute] Guid Id, [FromBody] RatingsDto dto)
         {
-            var userId = GetUserId();
+            try
+            {
+                var userId = GetUserId();
 
-            await _ratingService.RateOutfit(userId, outfitId, value);
+                await _ratingService.RateOutfit(userId, Id, dto.Value);
 
-            return Ok();
+                var stats = await _ratingService.GetRatingStats(Id);
+                return Ok(new { averageRating = stats.average, ratingsCount = stats.count });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

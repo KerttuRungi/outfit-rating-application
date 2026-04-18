@@ -417,5 +417,5 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-#Images
+#Images 
 /Outfit-Rating-Backend/wwwroot/images/
