@@ -14,7 +14,6 @@ export default function OutfitPostCard({ id, outfit, onRatingUpdated }) {
   const [error, setError] = useState(null);
   const [index, setIndex] = useState(0);
   const [rating, setRating] = useState(0);
-  const [localRatingsCount, setLocalRatingsCount] = useState(outfit?.ratingsCount ?? 0);
 
   const router = useRouter();
 
@@ -27,7 +26,7 @@ export default function OutfitPostCard({ id, outfit, onRatingUpdated }) {
   const name = data.name || "Untitled";
   const description = data.description || "";
   const averageRating = data.averageRating ?? 0;
-  const ratingsCount = localRatingsCount;
+  const ratingsCount = data.ratingsCount ?? 0;
   const imageUrls = data.imageUrls || [];
 
   function handleNavigate() {
@@ -46,7 +45,6 @@ export default function OutfitPostCard({ id, outfit, onRatingUpdated }) {
   useEffect(() => {
     setRating(averageRating);
     setIndex(0);
-    setLocalRatingsCount(data.ratingsCount ?? 0);
   }, [data, averageRating]);
 
   //Navigating between imgages, if there are multiple
@@ -64,20 +62,11 @@ export default function OutfitPostCard({ id, outfit, onRatingUpdated }) {
 
   async function handleRatingChange(newRating) {
     setRating(newRating);
-    // Optimistically update ratings count if user hasn't rated before
-    // For simplicity, always increment if rating was 0 before
-    if (rating === 0 && newRating > 0) {
-      setLocalRatingsCount((prev) => prev + 1);
-    }
     if (!outfitId) return;
     try {
       await rateOutfit(outfitId, newRating);
       onRatingUpdated?.(newRating);
     } catch (err) {
-      // If error, revert optimistic update
-      if (rating === 0 && newRating > 0) {
-        setLocalRatingsCount((prev) => (prev > 0 ? prev - 1 : 0));
-      }
       console.error(err);
     }
   }
