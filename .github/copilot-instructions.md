@@ -165,6 +165,65 @@ All outfit endpoints require authentication (`[Authorize]`). Rate limiting is ap
 
 ---
 
+## Coding Guidelines for AI Agents
+
+### Frontend — Language
+
+- **All frontend code must be written in JavaScript (`.js` / `.jsx`).** Do not introduce TypeScript (`.ts` / `.tsx`) files or type annotations.
+- Use ES module syntax (`import`/`export`). No CommonJS (`require`).
+
+### Frontend — Styling
+
+- Use **Tailwind CSS utility classes** for all styling. Prefer composing utilities over writing custom CSS rules.
+- **Use CSS custom properties (variables) from `globals.css` instead of hard-coding colour values.** The available variables are:
+
+  | Variable | Value |
+  |---|---|
+  | `--dpink` | `#f92a98` (primary brand pink) |
+  | `--lpink` | `#e7a2ca` (light pink) |
+  | `--dpurple` | `#400424` (dark purple) |
+  | `--dpink-70` | `rgba(249, 42, 152, 0.7)` |
+  | `--dpurple-10` | `rgba(64, 4, 36, 0.1)` |
+  | `--gradient-down` | dark-purple → dpink vertical gradient |
+  | `--background` | page background gradient |
+  | `--foreground` | default text colour |
+
+  Reference them in Tailwind with the bracket notation, e.g. `text-[var(--dpink)]`, `bg-[var(--gradient-down)]`.
+
+- **Use the global utility classes** defined in `globals.css` when they apply:
+  - `.card-hover` — adds GPU-accelerated lift/scale/shadow on hover; apply to the root element of card components.
+  - `.hover-spin` — makes an inline element spin on hover; use for decorative icon interactions.
+- Do **not** add new custom CSS classes unless absolutely necessary. Extend Tailwind utilities or `globals.css` instead.
+- Page backgrounds use `bg-[var(--background)]` or `bg-[var(--gradient-down)]`; keep text readable on these dark backgrounds (white or light colours).
+
+### Frontend — Component Structure
+
+- Follow **atomic design**: place the smallest reusable pieces in `atoms/`, composed groups in `molecules/`, and full feature sections in `organisms/`.
+- Server components (no directive) handle SSR data fetching and forward cookies. Client components must have `"use client"` at the top.
+- Never call the backend directly from a component — always go through the relevant service module in `src/services/` or `src/lib/apiClient.js`.
+
+### Backend — RESTful API Design
+
+- Follow REST conventions for all new endpoints:
+  - Use nouns for resource paths, not verbs: `/api/outfits`, not `/api/getOutfits`.
+  - Use HTTP methods semantically: `GET` (read), `POST` (create), `PUT`/`PATCH` (update), `DELETE` (remove).
+  - Return appropriate HTTP status codes: `200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`.
+  - New resource collections should follow the existing pattern: `[Route("api/[controller]")]` on the controller class.
+- Keep business logic out of controllers — delegate to the corresponding service in `OutfitRating.Application/Services/`.
+- Add new service methods behind an interface in `OutfitRating.Application/Interfaces/` and register them as scoped in `Program.cs`.
+
+### Backend — Security Practices
+
+- **Authentication**: Every endpoint that reads or modifies user data must carry `[Authorize]`. Public endpoints must be explicitly reviewed before omitting it.
+- **Ownership checks**: Before any mutating operation on a resource, verify `resource.CreatorId == GetUserId()` and return `403 Forbid()` on mismatch.
+- **Input validation**: Validate all incoming DTOs. `FileService` enforces extension allowlist (`.jpg`, `.jpeg`, `.png`, `.webp`) and 3 MB size cap — do not bypass these checks.
+- **Rate limiting**: The `"fixed"` rate-limiter policy (5 req / 12 s) is applied at the controller level via `[EnableRateLimiting("fixed")]`. Apply it to any new controller that accepts user-driven write operations.
+- **No secrets in code**: Connection strings and other secrets must live in `appsettings.json` (local only, never committed with real values) or environment/user-secrets — never hard-coded.
+- **CORS**: The existing `"AllowNextJS"` CORS policy (`http://localhost:3000`, credentials allowed) must not be loosened without explicit justification.
+- **Cookie security**: Auth cookies are `HttpOnly`, `SameSite=None`, `Secure=Always`. Do not change these settings.
+
+---
+
 ## Known Issues / Workarounds
 
 - There are no automated tests in this repository (no test projects or test files).
