@@ -74,6 +74,24 @@ namespace Outfit_Rating_Backend.Controllers
                     new { message = "An error occurred while retrieving the outfit." });
             }
         }
+        [HttpGet("{creatorId}")]
+        public async Task<IActionResult> GetOutfitsByCreatorId(string creatorId)
+        {
+            try
+            {
+                var outfit = await _outfitService.GetOutfitsByCreatorIdAsync(creatorId);
+                if (outfit == null)
+                {
+                    return NotFound($"No outfits found for {creatorId}");
+                }
+                return Ok(outfit);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while retrieving the related outfit." });
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateOutfitAsync([FromForm] OutfitDto dto)

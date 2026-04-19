@@ -63,6 +63,23 @@ namespace OutfitRating.Application.Services
                 ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>()
             };
         }
+
+        public async Task<IEnumerable<OutfitDto>> GetOutfitsByCreatorIdAsync(string creatorId)
+        {
+            var outfits = await _context.OutfitRating
+                .Where(o => o.CreatorId == creatorId)
+                .Include(o => o.Images)
+                .ToListAsync();
+            return outfits.Select(o => new OutfitDto
+            {
+                Id = o.Id,
+                Name = o.Name,
+                Description = o.Description,
+                AverageRating = o.AverageRating,
+                RatingsCount = o.RatingsCount,
+                ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>()
+            });
+        }
         public async Task<OutfitDto> CreateOutfitAsync(OutfitDto dto, string creatorId)
         {
             var uploadedFiles = new List<string>();

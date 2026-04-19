@@ -14,5 +14,6 @@ namespace OutfitRating.Application.Interfaces
         Task<OutfitDto> CreateOutfitAsync(OutfitDto dto, string creatorId);
         Task<OutfitDto> UpdateOutfitAsync(OutfitDto dto);
         Task<OutfitDto> DeleteOutfitAsync(OutfitDto dto);
+        Task<IEnumerable<OutfitDto>> GetOutfitsByCreatorIdAsync(string creatorId);
     }
 }
