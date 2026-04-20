@@ -11,6 +11,7 @@ body {
   --foreground: #171717;
   /* Theme color vars */
   --dpink: #f92a98;
+  --dpink-hover: #d81e7f;
   --lpink: #e7a2ca;
   --dpurple: #400424;
   --dpink-70: rgba(249, 42, 152, 0.7);
@@ -20,6 +21,11 @@ body {
     var(--dpurple) 0%,
     var(--dpink) 100%
   );
+}
+
+/* Custom hover for dpink */
+.hover\:bg-dpink-hover:hover {
+  background-color: var(--dpink-hover) !important;
 }
 
 @theme inline {
