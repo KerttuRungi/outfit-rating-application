@@ -26,7 +26,19 @@ export async function apiRequest(endpoint, options = {}, cookieHeader = null) {
     throw new Error("Unauthorized");
   }
 
-  if (!res.ok) throw new Error(`API Error: ${res.status}`);
+  if (!res.ok) {
+    let errorMessage = `API Error: ${res.status}`;
+    try {
+      const errorData = await res.json();
+      console.error("API error response:", errorData);
+      errorMessage = errorData.message || JSON.stringify(errorData);
+    } catch (e) {
+      // If response is not JSON, use status text
+      errorMessage = res.statusText || errorMessage;
+      console.error("Backend error (non-JSON):", res.statusText);
+    }
+    throw new Error(errorMessage);
+  }
 
   return res.status === 204 ? null : res.json();
 }
