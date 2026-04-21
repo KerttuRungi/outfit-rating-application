@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using OutfitRating.Domain.Entities;
+using OutfitRating.Infrastructure.Migrations;
+using System.Security.Claims;
 
 namespace Outfit_Rating_Backend.Controllers
 {
@@ -25,5 +27,17 @@ namespace Outfit_Rating_Backend.Controllers
 
             return Ok(new { message = "Logged out successfully" });
         }
-    }
+
+        //Get user id for creatorId
+        [HttpGet("user-id")]
+        [Authorize]
+        public IActionResult GetUserId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            return Ok(new { userId });
+        }
+}
 }

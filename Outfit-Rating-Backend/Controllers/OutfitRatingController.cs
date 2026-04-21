@@ -74,7 +74,7 @@ namespace Outfit_Rating_Backend.Controllers
                     new { message = "An error occurred while retrieving the outfit." });
             }
         }
-        [HttpGet("{creatorId}")]
+        [HttpGet("creator/{creatorId}")]
         public async Task<IActionResult> GetOutfitsByCreatorId(string creatorId)
         {
             try
@@ -86,10 +86,9 @@ namespace Outfit_Rating_Backend.Controllers
                 }
                 return Ok(outfit);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { message = "An error occurred while retrieving the related outfit." });
+                return StatusCode(500, new { message = ex.Message });
             }
         }
 
