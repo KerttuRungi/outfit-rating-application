@@ -8,6 +8,7 @@ import RatingStars from "../atoms/RatingStars";
 import { rateOutfit } from "@/services/ratingService";
 import { getImageUrl } from "../../services/getOutfit";
 import DeleteButton from "@/components/atoms/DeleteButton";
+import EditButton from "@/components/atoms/EditButton";
 
 export default function OutfitPostCard({
   id,
@@ -93,9 +94,10 @@ export default function OutfitPostCard({
       <div className="relative bg-gradient-to-br from-gray-100/80 to-white/60 h-96 flex items-center justify-center">
         {isCreator && (
           <div
-            className="absolute right-2 top-2 z-20"
+            className="absolute right-2 top-2 z-20 flex items-center gap-2"
             onClick={(e) => e.stopPropagation()}
           >
+            <EditButton id={outfitId} />
             <DeleteButton id={outfitId} onDelete={onDelete} />
           </div>
         )}
