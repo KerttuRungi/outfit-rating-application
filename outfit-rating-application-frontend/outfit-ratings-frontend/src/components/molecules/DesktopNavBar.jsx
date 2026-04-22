@@ -90,33 +90,26 @@ export default function DesktopNavBar() {
               )}
             </div>
 
-            {/* Add user profile logic */}
-            {/* <div
+            <div
               className="relative"
               onMouseEnter={() => setShowMenu(true)}
               onMouseLeave={() => setShowMenu(false)}
             >
-              <button
-                type="button"
-                className={`inline-flex items-center justify-center h-10 w-10 rounded-full border-2 transition-all ${user ? "border-green-400" : "border-white/20"} bg-[var(--dpink)]`}
+              <Link
+                href="/user-profile"
+                className="inline-flex items-center justify-center h-10 w-10 rounded-full transition-all bg-white/10 hover:bg-white/20 "
               >
                 <User size={18} className="text-white" />
-              </button>
+              </Link>
 
-              {showMenu && user && (
+              {showMenu && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-gray-800">
-                  <div className="px-4 py-2 border-b text-xs text-gray-500 truncate">
+                  <div className="px-4 py-2 text-xs text-gray-500 truncate">
                     {user.email}
                   </div>
-                  <Link
-                    href="/profile"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    My Profile
-                  </Link>
                 </div>
               )}
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
