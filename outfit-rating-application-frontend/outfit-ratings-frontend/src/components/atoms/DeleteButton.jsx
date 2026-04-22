@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
-import DeleteConfirmationModal from "@/components/atoms/DeleteConfirmationModal";
+import DeleteConfirmationModal from "@/components/molecules/DeleteConfirmationModal";
 
 export default function DeleteButton({ id, onDelete }) {
   const [open, setOpen] = useState(false);
