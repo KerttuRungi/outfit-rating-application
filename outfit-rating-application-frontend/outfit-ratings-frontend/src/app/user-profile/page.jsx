@@ -6,6 +6,7 @@ import OutfitCardList from "@/components/organisms/OutfitCardList";
 import UserProfileSidebar from "@/components/organisms/UserProfileSidebar";
 import { getCurrentUser } from "@/services/authService";
 import { getOutfitsByCreatorId } from "@/services/getOutfit";
+import { deleteOutfit } from "@/services/mutateOutfit";
 
 export default function UserProfilePage() {
   const router = useRouter();
@@ -39,6 +40,14 @@ export default function UserProfilePage() {
     fetchUserAndOutfits();
   }, [router]);
 
+  async function handleDelete(id) {
+    try {
+      await deleteOutfit(id);
+      setOutfits((prev) => prev.filter((o) => (o.outfitId || o.id) !== id));
+    } catch (err) {
+      console.error("Delete failed", err);
+      setError("Failed to delete outfit");
+    }
   }
 
   return (

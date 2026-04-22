@@ -6,6 +6,7 @@ import OutfitPostCard from "../molecules/OutfitCard";
 export default function OutfitCardList({
   outfits,
   showControls = false,
+  onDelete,
   compact = false,
 }) {
   if (!outfits || outfits.length === 0) {
@@ -32,6 +33,7 @@ export default function OutfitCardList({
               eager={i === 0}
               outfitId={outfit.outfitId || outfit.id}
               isCreator={showControls}
+              onDelete={(id) => onDelete?.(id)}
             />
           </div>
         ))}
