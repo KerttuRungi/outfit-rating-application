@@ -56,8 +56,27 @@ export async function getCurrentUser() {
 
     if (!res.ok) return null;
 
-    return res.json();
+    const userInfo = await res.json();
+
+    // Get the user ID from a separate endpoint
+    try {
+      const userIdResult = await fetch(`${AUTH_URL}/user-id`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (userIdResult.ok) {
+        const idData = await userIdResult.json();
+        userInfo.userId = idData.userId;
+        console.log("User ID from /auth/user-id:", idData.userId);
+      }
+    } catch (err) {
+      console.warn("Could not fetch user ID from /auth/user-id:", err);
+    }
+
+    return userInfo;
   } catch (err) {
+    console.error("Error fetching current user:", err);
     return null;
   }
 }

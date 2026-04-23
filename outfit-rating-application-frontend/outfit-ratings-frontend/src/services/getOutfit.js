@@ -11,6 +11,14 @@ export async function getOutfitById(id, cookieHeader) {
   return apiRequest(`${OUTFITS_URL}/${id}`, { method: "GET" }, cookieHeader);
 }
 
+export async function getOutfitsByCreatorId(creatorId, cookieHeader) {
+  return apiRequest(
+    `${OUTFITS_URL}/creator/${creatorId}`,
+    { method: "GET" },
+    cookieHeader,
+  );
+}
+
 export function getImageUrl(imagePath) {
   if (!imagePath) return "";
 

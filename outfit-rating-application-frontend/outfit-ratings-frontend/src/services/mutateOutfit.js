@@ -25,6 +25,11 @@ export async function updateOutfit(id, outfitData) {
   formData.append("Name", outfitData.name);
   formData.append("Description", outfitData.description);
 
+  // Image handling for updates
+  if (outfitData.imageFile) {
+    formData.append("Images", outfitData.imageFile);
+  }
+
   return apiRequest(`${OUTFITS_URL}/${id}`, {
     method: "PUT",
     body: formData,

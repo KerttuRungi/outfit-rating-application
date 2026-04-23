@@ -7,8 +7,16 @@ import { useRouter } from "next/navigation";
 import RatingStars from "../atoms/RatingStars";
 import { rateOutfit } from "@/services/ratingService";
 import { getImageUrl } from "../../services/getOutfit";
+import DeleteButton from "@/components/atoms/DeleteButton";
+import EditButton from "@/components/atoms/EditButton";
 
-export default function OutfitPostCard({ id, outfit, onRatingUpdated }) {
+export default function OutfitPostCard({
+  id,
+  outfit,
+  onRatingUpdated,
+  isCreator = false,
+  onDelete,
+}) {
   const [data, setData] = useState(outfit || null);
   const [loading, setLoading] = useState(!outfit && !!id);
   const [error, setError] = useState(null);
@@ -16,6 +24,10 @@ export default function OutfitPostCard({ id, outfit, onRatingUpdated }) {
   const [rating, setRating] = useState(0);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (outfit) setData(outfit);
+  }, [outfit]);
 
   if (loading) return <div className="text-center p-4">Loading...</div>;
   if (error)
@@ -73,13 +85,22 @@ export default function OutfitPostCard({ id, outfit, onRatingUpdated }) {
 
   return (
     <div
-      className="h-full rounded-2xl overflow-hidden shadow-xl border hover:border-[var(--dpink)] bg-white backdrop-blur-md transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl cursor-pointer"
+      className="relative h-full rounded-2xl overflow-hidden shadow-xl border hover:border-[var(--dpink)] bg-white backdrop-blur-md transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl cursor-pointer"
       onClick={handleNavigate}
       role="button"
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
       <div className="relative bg-gradient-to-br from-gray-100/80 to-white/60 h-96 flex items-center justify-center">
+        {isCreator && (
+          <div
+            className="absolute right-2 top-2 z-20 flex items-center gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <EditButton id={outfitId} />
+            <DeleteButton id={outfitId} onDelete={onDelete} />
+          </div>
+        )}
         {imageUrls.length > 0 ? (
           <>
             <div className="relative w-full h-full flex items-center justify-center">
