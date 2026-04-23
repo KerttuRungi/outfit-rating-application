@@ -12,6 +12,10 @@ const config = {
 
   coverageProvider: "babel",
   testEnvironment: "jsdom",
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
+  moduleDirectories: ["node_modules", "<rootDir>/src"],
 };
 
 module.exports = createJestConfig(config);
