@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,8 @@ namespace OutfitRating.Domain.Entities
         public int RatingsCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public int? StyleId { get; set; }
+        public StyleFilters? Style { get; set; }
 
         public List<OutfitImages> Images { get; set; } = new();
         public List<Rating> Ratings { get; set; } = new();
