@@ -96,7 +96,7 @@ namespace OutfitRating.Application.Services
                 uploadedFiles = await _fileService.UploadImagesAsync(dto.Images);
             }
 
-            // validate style exists (styles are preset in the DB)
+            // validate if style exists
             if (dto.StyleId <= 0 || !await _context.StyleFilters.AnyAsync(s => s.Id == dto.StyleId))
             {
                 throw new Exception("Invalid or missing style selected");
@@ -131,7 +131,7 @@ namespace OutfitRating.Application.Services
             _context.OutfitRating.Add(o);
             await _context.SaveChangesAsync();
 
-            // load navigation to avoid an extra query later
+            // Load style name before to avoid extra db calls
             await _context.Entry(o).Reference(x => x.Style).LoadAsync();
 
             return new OutfitDto
@@ -161,7 +161,6 @@ namespace OutfitRating.Application.Services
             o.Description = dto.Description;
             o.AverageRating = dto.AverageRating;
             o.RatingsCount = dto.RatingsCount;
-            // validate new style exists before assigning
             if (dto.StyleId <= 0 || !await _context.StyleFilters.AnyAsync(s => s.Id == dto.StyleId))
             {
                 throw new Exception("Invalid or missing style selected");
@@ -201,7 +200,6 @@ namespace OutfitRating.Application.Services
                 await _context.SaveChangesAsync();
             }
 
-            // ensure navigation reflects current StyleId
             await _context.Entry(o).Reference(x => x.Style).LoadAsync();
 
             return new OutfitDto
@@ -233,7 +231,6 @@ namespace OutfitRating.Application.Services
                 await _fileService.DeleteImagesAsync(oldFileNames);
             }
 
-            // make sure we have the style name before removing the entity
             await _context.Entry(o).Reference(x => x.Style).LoadAsync();
             var styleName = o.Style?.Name;
 

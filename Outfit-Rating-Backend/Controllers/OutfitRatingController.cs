@@ -176,7 +176,7 @@ namespace Outfit_Rating_Backend.Controllers
         }
 
         // Endpoint for filtering outfits by style
-        [HttpGet("by-style/{styleId:int}")]
+        [HttpGet("style/{styleId:int}")]
         public async Task<IActionResult> GetByStyle(int styleId)
         {
             var outfits = await _outfitService.GetOutfitsByStyleAsync(styleId);

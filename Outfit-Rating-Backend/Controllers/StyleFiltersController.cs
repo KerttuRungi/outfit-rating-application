@@ -9,14 +9,14 @@ using OutfitRating.Infrastructure;
 
 namespace Outfit_Rating_Backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/styles")]
     [ApiController]
     [EnableRateLimiting("fixed")]
-    public class StyleFiltersController : ControllerBase
+    public class StylesController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public StyleFiltersController(AppDbContext context)
+        public StylesController(AppDbContext context)
         {
             _context = context;
         }
@@ -29,7 +29,7 @@ namespace Outfit_Rating_Backend.Controllers
                 var styles = await _context.StyleFilters.ToListAsync();
                 if (styles == null || !styles.Any())
                 {
-                    return NotFound("No styles found.");
+                    return NotFound("No matching styles found.");
                 }
                 var dtos = styles.Select(s => new StyleFiltersDto { Id = s.Id, Name = s.Name });
                 return Ok(dtos);
