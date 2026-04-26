@@ -40,6 +40,7 @@ export default function OutfitPostCard({
   const averageRating = data.averageRating ?? 0;
   const ratingsCount = data.ratingsCount ?? 0;
   const imageUrls = data.imageUrls || [];
+  const styleName = data.styleName || "";
 
   function handleNavigate() {
     if (!outfitId) return;
@@ -147,9 +148,14 @@ export default function OutfitPostCard({
       </div>
 
       <div className="p-4">
-        <p className="text-base font-medium text-gray-700 mb-2 capitalize tracking-tight">
-          {description}
-        </p>
+        <div className="flex items-center justify-between m">
+          <p className="text-base font-medium text-gray-700 mb-2 capitalize tracking-tight flex-1 truncate">
+            {description}
+          </p>
+          <p className="text-xs text-gray-700 mb-2 capitalize tracking-tight ml-4 text-right">
+            {styleName}
+          </p>
+        </div>
         <div className="gap-4" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center gap-2 text-sm text-gray-700">
             <span className="font-semibold">Average:</span>

@@ -14,6 +14,8 @@ namespace OutfitRating.Application.Dtos
         public string Description { get; set; }
         public double AverageRating { get; set; }
         public int RatingsCount { get; set; }
+        public int? StyleId { get; set; }
+        public string? StyleName { get; set; }
         public List<IFormFile>? Images { get; set; } = new();
         public List<string>? ImageUrls { get; set; } = new();
     }
