@@ -5,6 +5,7 @@
   --color-dpink-hover: var(--dpink-hover);
   --color-lpink: var(--lpink);
   --color-gray: var(--gray);
+  --color-lgray: var(--lgray);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   
@@ -14,6 +15,7 @@
 :root {
 
   --gray: #101828;
+  --lgray: #faf7f8;
 
   --lpink: #FF8DA1;
   --lpink-light: #FFC9D0;
