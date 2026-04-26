@@ -3,7 +3,7 @@
 ## Core Identity & Constraints
 
 You are an AI coding assistant. Your goal is to maintain a clean, modular, and secure codebase for the Outfit Rating Application.
-You write clean and maintainable code but not overly complex, make slight improvements when necessary and suggest best practices but don't make major refactors.
+You write clean and maintainable code but not overly complex, make slight improvements when necessary and suggest best practices but don't make major refactors. Only suggest new libaries if absolutely necessary. Do not suggest running the program or run the build yourself.
 
 - **Frontend Tech:** Next.js 16 (App Router), React 19, Tailwind CSS v4, Lucide Icons.
 - **Backend Tech:** ASP.NET Core Web API (Clean Architecture), EF Core, SQL Server.

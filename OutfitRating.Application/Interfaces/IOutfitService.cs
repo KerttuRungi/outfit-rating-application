@@ -9,6 +9,7 @@ namespace OutfitRating.Application.Interfaces
 {
     public interface IOutfitService
     {
+        Task<IEnumerable<OutfitDto>> GetAllOutfitsAsync();
         Task<OutfitDto> GetOutfitByIdAsync(Guid Id);
         Task<OutfitDto> CreateOutfitAsync(OutfitDto dto, string creatorId);
         Task<OutfitDto> UpdateOutfitAsync(OutfitDto dto);

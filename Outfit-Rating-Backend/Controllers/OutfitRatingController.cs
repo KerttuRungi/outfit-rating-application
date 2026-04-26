@@ -19,6 +19,11 @@ namespace Outfit_Rating_Backend.Controllers
         private readonly IOutfitService _outfitService;
         private readonly IRatingService _ratingService;
 
+        public OutfitRatingController(
+            AppDbContext context,
+            IOutfitService outfitRatingService,
+            IRatingService ratingService
+        )
         {
             _context = context;
             _outfitService = outfitRatingService;
@@ -48,8 +53,13 @@ namespace Outfit_Rating_Backend.Controllers
             }
             catch (Exception ex)
             {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while creating the item." }
+                );
             }
         }
+
         [HttpGet("{Id:guid}")]
         public async Task<IActionResult> GetOutfitById(Guid Id)
         {
@@ -64,6 +74,10 @@ namespace Outfit_Rating_Backend.Controllers
             }
             catch (Exception)
             {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while retrieving the outfit." }
+                );
             }
         }
 

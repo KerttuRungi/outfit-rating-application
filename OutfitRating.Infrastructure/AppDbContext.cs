@@ -12,6 +12,9 @@ namespace OutfitRating.Infrastructure
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options) { }
+
         public DbSet<Outfit> OutfitRating { get; set; } //Outfit entitys table not to be confused with ratings
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<StyleFilters> StyleFilters { get; set; }

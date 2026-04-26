@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ namespace OutfitRating.Application.Services
     {
         private readonly AppDbContext _context;
         private readonly IFileService _fileService;
+
+        public OutfitService(AppDbContext context, IFileService fileService)
         {
             _context = context;
             _fileService = fileService;
