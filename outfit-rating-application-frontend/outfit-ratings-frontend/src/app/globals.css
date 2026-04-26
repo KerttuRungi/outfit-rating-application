@@ -1,80 +1,102 @@
 @import "tailwindcss";
 
-html,
-body {
-  height: 100%;
-  margin: 0;
+@theme {
+  --color-dpink: var(--dpink);
+  --color-dpink-hover: var(--dpink-hover);
+  --color-lpink: var(--lpink);
+  --color-dpurple: var(--dpurple);
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --background-image-gradient-down: var(--gradient-down);
 }
 
 :root {
-  --background: linear-gradient(to bottom, #17010d 0%, #f02692 100%);
-  --foreground: #171717;
-  /* Theme color vars */
-  --dpink: #f92a98;
-  --dpink-hover: #d81e7f;
-  --lpink: #e7a2ca;
-  --dpurple: #400424;
-  --dpink-70: rgba(249, 42, 152, 0.7);
-  --dpurple-10: rgba(64, 4, 36, 0.1);
+  --lpink: #FF8DA1;
+  --lpink-light: #FFC9D0;
+
+  --dpink: #FF376E;
+  --dpink-dark: #CA004C;
+  --dpink-magenta: #880032;
+  --dpink-hover: #61212D; /* Change color?*/
+
+  --maroon: #500019;
+  --dmaroon: #2C000A;
+
+ --background: linear-gradient(
+    135deg,
+   var(--dpink) 0%,      
+    var(--lpink) 35%,      
+    var(--lpink) 40%,        
+    var(--dpink-dark) 100%   
+  );
+  
+  --foreground: #500019;
+
   --gradient-down: linear-gradient(
     to bottom,
     var(--dpurple) 0%,
     var(--dpink) 100%
   );
 }
-
-/* Custom hover for dpink */
-.hover\:bg-dpink-hover:hover {
-  background-color: var(--dpink-hover) !important;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.landing-page {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100vh;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), 
+    var(--background);
+  
+  background-blend-mode: normal;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: linear-gradient(to bottom, #17010d 0%, #f02692 100%);
     --foreground: #ededed;
   }
 }
 
-body {
+@layer base {
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+ body {
+  margin: 0;
   min-height: 100vh;
   background: var(--background);
+  position: relative;
+  overflow: auto;
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: center top;
   background-attachment: fixed;
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
 }
 
-/* Card hover utility - use with component root to add lift, scale and shadow */
-.card-hover {
-  @apply transform-gpu transition-transform duration-200 will-change-transform bg-white;
-}
-.card-hover:hover {
-  @apply -translate-y-2 scale-100 shadow-2xl z-10;
-}
+/* Custom Components/Utilities */
+@layer components {
+  .card-hover {
+    @apply transform-gpu transition-transform duration-200 will-change-transform bg-white;
+    &:hover {
+      @apply -translate-y-2 scale-100 shadow-2xl z-10;
+    }
+  }
 
-.hover-spin {
-  display: inline-block;
-  transform-origin: center center;
-  will-change: transform;
-}
-.hover-spin:hover {
-  animation: spin 1s linear infinite;
+  .hover-spin {
+    @apply inline-block;
+    will-change: transform;
+    &:hover {
+      animation: spin 1s linear infinite;
+    }
+  }
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
