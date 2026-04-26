@@ -30,7 +30,7 @@ export default function OutfitDetailPage() {
   if (error) return <div className="text-center p-8 text-red-600">{error}</div>;
   if (!outfit) return <div className="text-center p-8">Outfit not found</div>;
 
-  const { name, description, averageRating, ratingsCount, imageUrls } = outfit;
+  const { name, description, averageRating, ratingsCount, imageUrls, styleName } = outfit;
 
   // function prevImage() {
   //   if (!imageUrls || imageUrls.length === 0) return;
@@ -114,7 +114,7 @@ export default function OutfitDetailPage() {
           <div className="bg-white/80 rounded-2xl px-6 py-4 text-gray-800">
             <span className="font-semibold">Style</span>
             <div className="mt-2 text-sm text-gray-700">
-              Casual / Street (placeholder)
+              {styleName ?? "No style specified"}
             </div>
           </div>
         </div>
