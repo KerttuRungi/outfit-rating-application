@@ -1,47 +1,26 @@
 # Outfit Rating Application
 
-A full-stack web application where users can share outfit posts, upload images, and rate each other's looks. Built as a thesis project (lõputöö).
+A full-stack web application where users can share outfit posts, upload images, and rate each other's looks. Built as TTHK TARge24 thesies project.
 
 ---
 
 ## Features
 
-- **Share** – Create outfit posts with images and a description
+- **Posts** – Create outfit posts with images, title, description and a selected style filter
 - **Rate** – Rate outfits on a 1–5 star scale
-- **Explore** – Browse all outfits or filter by style
-- **Profile** – View your own posts and profile
-- **Auth** – Register and log in with secure HttpOnly cookie sessions
+- **Explore** – Browse all outfits created by users 
+- **Profile** – View your own posts, average rating from all posts and an overview of posts
+- **Auth** – Register and log in with gmail, configured with cookie sessions
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 16 (App Router), React 19, Tailwind CSS v4, Lucide Icons |
 | Backend | ASP.NET Core Web API (.NET 8, Clean Architecture) |
+| Frontend | Next.js (App Router), React, Tailwind CSS, Lucide Icons |
+| Testing | Swagger UI (Backend API), Jest (Frontend) |
 | Database | SQL Server + Entity Framework Core |
 | Auth | ASP.NET Identity (cookie-based) |
-
----
-
-## Project Structure
-
-```
-outfit-rating-application/
-├── outfit-rating-application-frontend/
-│   └── outfit-ratings-frontend/     # Next.js frontend app
-│       └── src/
-│           ├── app/                  # Pages (App Router)
-│           ├── components/           # Atoms, Molecules, Organisms
-│           ├── services/             # API service functions
-│           ├── helpers/              # Validation utilities
-│           └── lib/                  # API client, shared utilities
-├── Outfit-Rating-Backend/            # ASP.NET Core entry point (Controllers, Program.cs)
-├── OutfitRating.Application/         # Business logic (Services, DTOs, Interfaces)
-├── OutfitRating.Domain/              # Domain entities (Outfit, Rating, User, StyleFilters)
-└── OutfitRating.Infrastructure/      # EF Core DbContext and Migrations
-```
 
 ---
 
@@ -89,10 +68,10 @@ outfit-rating-application/
 
 3. Create a `.env.local` file with the following variables:
    ```env
-   NEXT_PUBLIC_API_URL=https://localhost:7129
-   NEXT_PUBLIC_IMAGE_HOST=localhost
-   NEXT_PUBLIC_IMAGE_PORT=7129
-   NEXT_PUBLIC_IMAGE_PROTOCOL=https
+   NEXT_PUBLIC_API_URL=your backend url
+   NEXT_PUBLIC_IMAGE_HOST=
+   NEXT_PUBLIC_IMAGE_PORT=backend port
+   NEXT_PUBLIC_IMAGE_PROTOCOL=
    ```
 
 4. Start the development server:
