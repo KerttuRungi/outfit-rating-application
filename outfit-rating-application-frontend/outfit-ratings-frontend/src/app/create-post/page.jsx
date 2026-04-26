@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createOutfit } from "@/services/mutateOutfit";
+import { getAllStyles } from "@/services/styleFiltersService";
+import Select from "@/components/atoms/Select";
 import { Upload, X } from "lucide-react";
 
 export default function CreateOutfitPage() {
@@ -11,6 +13,9 @@ export default function CreateOutfitPage() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [selectedStyle, setSelectedStyle] = useState(null);
+  const [styles, setStyles] = useState([]);
+  const [stylesLoading, setStylesLoading] = useState(true);
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -25,6 +30,24 @@ export default function CreateOutfitPage() {
     "image/png",
     "image/webp",
   ];
+
+  useEffect(() => {
+    async function fetchStyles() {
+      try {
+        const data = await getAllStyles();
+        const styleOptions = data.map((style) => ({
+          value: style.id,
+          label: style.name,
+        }));
+        setStyles(styleOptions);
+      } catch (err) {
+        console.error("Failed to fetch styles", err);
+      } finally {
+        setStylesLoading(false);
+      }
+    }
+    fetchStyles();
+  }, []);
 
   function handleImageChange(e) {
     const file = e.target.files[0];
@@ -105,6 +128,10 @@ export default function CreateOutfitPage() {
       setDescriptionError("Description cannot exceed 200 characters");
       hasError = true;
     }
+    if (!selectedStyle) {
+      setError("Style is required");
+      hasError = true;
+    }
     if (hasError) return;
 
     setLoading(true);
@@ -114,7 +141,12 @@ export default function CreateOutfitPage() {
         setLoading(false);
         return;
       }
-      await createOutfit({ name, description, imageFile: image });
+      await createOutfit({
+        name,
+        description,
+        styleId: selectedStyle,
+        imageFile: image,
+      });
       router.push("/explore");
     } catch (err) {
       setError("Failed to create outfit");
@@ -204,6 +236,16 @@ export default function CreateOutfitPage() {
                 {nameError}
               </p>
             )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Select
+              label="Style"
+              placeholder="Choose a style"
+              options={styles}
+              value={selectedStyle}
+              onChange={setSelectedStyle}
+            />
           </div>
 
           <div className="flex flex-col gap-2">
