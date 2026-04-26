@@ -4,8 +4,7 @@
   --color-dpink: var(--dpink);
   --color-dpink-hover: var(--dpink-hover);
   --color-lpink: var(--lpink);
-  --color-dpurple: var(--dpurple);
-  
+  --color-gray: var(--gray);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   
@@ -13,6 +12,9 @@
 }
 
 :root {
+
+  --gray: #101828;
+
   --lpink: #FF8DA1;
   --lpink-light: #FFC9D0;
 
@@ -36,7 +38,7 @@
 
   --gradient-down: linear-gradient(
     to bottom,
-    var(--dpurple) 0%,
+    var(--lpink) 0%,
     var(--dpink) 100%
   );
 }
