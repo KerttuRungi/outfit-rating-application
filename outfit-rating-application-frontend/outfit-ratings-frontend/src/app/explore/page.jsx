@@ -10,7 +10,7 @@ export default async function ExplorePage() {
   return (
     <main>
       <div>
-        <h1 className="text-3xl font-bold text-white text-center mt-8">
+        <h1 className="text-3xl font-bold text-white text-center mt-20">
           Explore Outfits
         </h1>
         <p className="text-center text-white mt-2 mb-2">

@@ -158,7 +158,7 @@ export default function EditOutfitPage() {
   }
 
   return (
-    <main className="min-h-screen w-full flex flex-col bg-transparent">
+    <main className="min-h-screen w-full flex flex-col bg-transparent mt-20">
       <form
         onSubmit={handleSubmit}
         noValidate

@@ -42,7 +42,7 @@ export default function OutfitDetailPage() {
   // }
 
   return (
-    <main className="min-h-screen w-full flex flex-col bg-transparent">
+    <main className="min-h-screen w-full flex flex-col bg-transparent mt-20">
       <div className="flex-1 flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-x-12 px-4 md:px-12 py-8 md:py-10 max-w-[1200px] mx-auto w-full">
         <div className="w-full md:col-span-5 flex flex-col">
           <div className="relative bg-white/80 rounded-2xl h-[280px] md:h-[520px] w-full flex items-center justify-center overflow-hidden shadow-md">
