@@ -21,7 +21,7 @@ export default async function ExplorePage() {
             <CreateButton />
           </div>
         </div>
-        <OutfitCardList outfits={outfits} />
+        <OutfitCardList outfits={outfits} enableStyleFilter />
       </div>
     </main>
   );
