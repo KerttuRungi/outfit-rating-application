@@ -4,20 +4,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Star, Plus, Search, User } from "lucide-react";
 import FeatureCard from "@/components/molecules/FeatureCard";
-import { getCurrentUser } from "@/services/authService";
+import useAuth from "@/hooks/useAuth";
 
 export default function HomePage() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    let mounted = true;
-    getCurrentUser().then((user) => {
-      if (mounted && user) setUser(user);
-    });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const { user } = useAuth();
   return (
     <main className="landing-page text-white pt-16">
       <section className="min-h-[80vh] w-full container mx-auto px-6 lg:px-12 py-12">

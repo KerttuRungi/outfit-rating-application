@@ -8,7 +8,7 @@ export default async function ExplorePage() {
   const cookieHeader = (await cookies()).toString();
   const outfits = await getAllOutfits(cookieHeader);
   return (
-    <main>
+    <main className="pt-16">
       <div>
         <h1 className="text-3xl font-bold text-white text-center mt-20">
           Explore Outfits
