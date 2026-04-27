@@ -3,37 +3,24 @@ import React, { useEffect, useState } from "react";
 import menuItems from "../../lib/menuItems";
 import Link from "next/link";
 import { Star, User } from "lucide-react";
-import { getCurrentUser, logout } from "@/services/authService";
+import useAuth from "@/hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation"; // To redirect after logout
 
 export default function DesktopNavBar() {
-  const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { user, loading, refresh, logout } = useAuth();
 
   useEffect(() => {
-    let mounted = true;
-    //fetch user before rendering (could be made a global hook)
-    async function fetchUser() {
-      const currentUser = await getCurrentUser();
-      if (mounted) {
-        setUser(currentUser);
-      }
-    }
-
-    fetchUser();
-    return () => {
-      mounted = false;
-    };
-  }, [pathname]);
+    refresh();
+  }, [pathname, refresh]);
 
   const handleLogout = async () => {
     try {
       await logout();
-      setUser(null); // Clear local state
       router.push("/");
-      router.refresh(); // Refresh the page to clear any cached user data
+      router.refresh();
     } catch (err) {
       console.error("Logout failed", err);
     }
