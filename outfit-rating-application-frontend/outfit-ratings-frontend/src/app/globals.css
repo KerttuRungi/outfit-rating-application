@@ -8,7 +8,7 @@
   --color-lgray: var(--lgray);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
+
   --background-image-gradient-down: var(--gradient-down);
 }
 
@@ -35,7 +35,7 @@
     var(--lpink) 40%,        
     var(--dpink-dark) 100%   
   );
-  
+
   --foreground: #500019;
 
   --gradient-down: linear-gradient(
@@ -51,7 +51,7 @@
   background: 
     linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), 
     var(--background);
-  
+
   background-blend-mode: normal;
   background-repeat: no-repeat;
   background-size: cover;
