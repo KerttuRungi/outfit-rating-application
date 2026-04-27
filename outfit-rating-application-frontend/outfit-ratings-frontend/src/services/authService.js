@@ -1,5 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const AUTH_URL = `${API_URL}/auth`;
+import { apiRequest } from "@/lib/apiClient";
+import { redirect } from "next/navigation";
 
 export async function login(email, password) {
   const res = await fetch(`${AUTH_URL}/login?useCookies=true`, {
@@ -78,5 +80,23 @@ export async function getCurrentUser() {
   } catch (err) {
     console.error("Error fetching current user:", err);
     return null;
+  }
+}
+
+// Server-side helper for server components/pages.
+export async function requireAuthServer(cookieHeader) {
+  try {
+    const userInfo = await apiRequest("/auth/manage/info", { method: "GET" }, cookieHeader);
+
+    try {
+      const idData = await apiRequest("/auth/user-id", { method: "GET" }, cookieHeader);
+      if (idData?.userId) userInfo.userId = idData.userId;
+    } catch (e) {
+      // ignore user-id failure
+    }
+
+    return userInfo;
+  } catch (err) {
+    redirect("/auth/login");
   }
 }
