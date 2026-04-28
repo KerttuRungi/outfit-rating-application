@@ -4,20 +4,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Star, Plus, Search } from "lucide-react";
 import FeatureCard from "@/components/molecules/FeatureCard";
-import { getCurrentUser } from "@/services/authService";
+import useAuth from "@/hooks/useAuth";
 
 export default function HomePage() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    let mounted = true;
-    getCurrentUser().then((user) => {
-      if (mounted && user) setUser(user);
-    });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const { user } = useAuth();
   return (
     <main className="min-h-screen w-full bg-[var(--gradient-down)] text-white">
       {/* Hero */}

@@ -3,37 +3,24 @@ import React, { useEffect, useState } from "react";
 import menuItems from "../../lib/menuItems";
 import Link from "next/link";
 import { Star, User } from "lucide-react";
-import { getCurrentUser, logout } from "@/services/authService";
+import useAuth from "@/hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation"; // To redirect after logout
 
 export default function DesktopNavBar() {
-  const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { user, loading, refresh, logout } = useAuth();
 
   useEffect(() => {
-    let mounted = true;
-    //fetch user before rendering (could be made a global hook)
-    async function fetchUser() {
-      const currentUser = await getCurrentUser();
-      if (mounted) {
-        setUser(currentUser);
-      }
-    }
-
-    fetchUser();
-    return () => {
-      mounted = false;
-    };
-  }, [pathname]);
+    refresh();
+  }, [pathname, refresh]);
 
   const handleLogout = async () => {
     try {
       await logout();
-      setUser(null); // Clear local state
       router.push("/");
-      router.refresh(); // Refresh the page to clear any cached user data
+      router.refresh();
     } catch (err) {
       console.error("Logout failed", err);
     }
@@ -89,27 +76,28 @@ export default function DesktopNavBar() {
                 </button>
               )}
             </div>
-
-            <div
-              className="relative"
-              onMouseEnter={() => setShowMenu(true)}
-              onMouseLeave={() => setShowMenu(false)}
-            >
-              <Link
-                href="/user-profile"
-                className="inline-flex items-center justify-center h-10 w-10 rounded-full transition-all bg-white/10 hover:bg-white/20 "
+            {user && (
+              <div
+                className="relative"
+                onMouseEnter={() => setShowMenu(true)}
+                onMouseLeave={() => setShowMenu(false)}
               >
-                <User size={18} className="text-white" />
-              </Link>
+                <Link
+                  href="/user-profile"
+                  className="inline-flex items-center justify-center h-10 w-10 rounded-full transition-all bg-white/10 hover:bg-white/20 "
+                >
+                  <User size={18} className="text-white" />
+                </Link>
 
-              {showMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-gray-800">
-                  <div className="px-4 py-2 text-xs text-gray-500 truncate">
-                    {user.email}
+                {showMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-gray-800">
+                    <div className="px-4 py-2 text-xs text-gray-500 truncate">
+                      {user.email}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
