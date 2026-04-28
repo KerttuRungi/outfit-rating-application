@@ -4,6 +4,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import OutfitPostCard from "../molecules/OutfitCard";
 import Select from "@/components/atoms/Select";
 import { getAllStyles } from "@/services/styleFiltersService";
+import SearchBar from "../atoms/SearchBar";
 
 export default function OutfitCardList({
   outfits,
@@ -15,6 +16,11 @@ export default function OutfitCardList({
   const [selectedStyle, setSelectedStyle] = useState("");
   const [styles, setStyles] = useState([]);
   const [stylesLoading, setStylesLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  function handleSearch(newSearch) {
+    setSearch(newSearch);
+  }
 
   useEffect(() => {
     async function fetchStyles() {
@@ -35,9 +41,21 @@ export default function OutfitCardList({
   }, []);
 
   const visibleOutfits = useMemo(() => {
-    if (!enableStyleFilter || !selectedStyle) return outfits;
-    return outfits.filter((o) => o.styleId == selectedStyle);
-  }, [outfits, selectedStyle, enableStyleFilter]);
+    let result = outfits;
+
+    if (enableStyleFilter && selectedStyle) {
+      result = result.filter((o) => o.styleId == selectedStyle);
+    }
+
+    if (search.trim()) {
+      const normalizedSearch = search.trim().toLowerCase();
+
+      result = result.filter((o) =>
+        (o.name || "").toLowerCase().includes(normalizedSearch),
+      );
+    }
+    return result;
+  }, [outfits, selectedStyle, enableStyleFilter, search]);
 
   if (!outfits || outfits.length === 0) {
     return (
@@ -51,20 +69,26 @@ export default function OutfitCardList({
     ? "col-span-12 sm:col-span-12 md:col-span-12 lg:col-span-6 xl:col-span-4 h-full"
     : "col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 h-full";
   return (
-    <div className="px-6 mx-auto max-w-7xl">
-      {enableStyleFilter && (
-        <div className="flex justify-center w-full mb-4">
+    <main className="px-6 mx-auto max-w-7xl">
+      <div className="flex flex-row items-center gap-4">
+        <SearchBar
+          value={search}
+          search={handleSearch}
+          placeholder="Search outfits..."
+        />
+        {enableStyleFilter && (
           <div className="w-full max-w-sm">
             <Select
-              label="Filter by style"
               options={styles}
               value={selectedStyle}
               onChange={setSelectedStyle}
+              variant={enableStyleFilter ? "explore" : "default"}
               placeholder="All styles"
+              className="flex items-center justify-between w-full px-4 py-2 rounded-xl bg-white text-white placeholder:text-gray focus:outline-none"
             />
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {visibleOutfits.length === 0 ? (
         <div className="text-center p-8">
@@ -92,6 +116,6 @@ export default function OutfitCardList({
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
 }
