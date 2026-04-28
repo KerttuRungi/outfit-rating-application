@@ -170,7 +170,7 @@ export default function OutfitPostCard({
               value={rating}
               onChange={handleRatingChange}
             />
-            <div className="text-xs text-lgray whitespace-nowrap">
+            <div className="text-xs text-dgray whitespace-nowrap">
               {ratingsCount} {ratingsCount === 1 ? "rating" : "ratings"}
             </div>
           </div>
