@@ -19,7 +19,9 @@ export default function StyleFilter({ outfits = [] }) {
   }, [outfits]);
 
   const filtered = selectedStyle
-    ? outfits.filter((o) => (o.styleName ? o.styleName : "Unknown") === selectedStyle)
+    ? outfits.filter(
+        (o) => (o.styleName ? o.styleName : "Unknown") === selectedStyle,
+      )
     : outfits;
 
   return (
@@ -31,6 +33,7 @@ export default function StyleFilter({ outfits = [] }) {
             options={styleOptions}
             value={selectedStyle}
             onChange={(v) => setSelectedStyle(v)}
+            variant="styleFilter"
             placeholder="All styles"
           />
         </div>
