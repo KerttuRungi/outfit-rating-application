@@ -1,12 +1,49 @@
 // All outfit posts
+"use client";
+
 import CreateButton from "@/components/atoms/CreateButton";
 import OutfitCardList from "@/components/organisms/OutfitCardList";
 import { getAllOutfits } from "@/services/getOutfit";
-import { cookies } from "next/headers";
+import useAuth from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default async function ExplorePage() {
-  const cookieHeader = (await cookies()).toString();
-  const outfits = await getAllOutfits(cookieHeader);
+export default function ExplorePage() {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+  const [outfits, setOutfits] = useState([]);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchOutfits = async () => {
+      try {
+        if (!authLoading && !user) {
+          router.push("/auth/login");
+          return;
+        }
+
+        if (user) {
+          const outfits = await getAllOutfits(user.userId);
+          setOutfits(outfits);
+        }
+      } catch (err) {
+        console.error("Error loading profile:", err);
+        setError(
+          "Failed to load your profile or outfits: " + (err?.message || err),
+        );
+      }
+    };
+
+    fetchOutfits();
+  }, [authLoading, user, router]);
+
+  if (authLoading || !user) {
+    return (
+      <main className="min-h-screen items-center justify-center flex">
+        <p className="text-white text-lg">Loading...</p>
+      </main>
+    );
+  }
+
   return (
     <main className="pt-16">
       <div>

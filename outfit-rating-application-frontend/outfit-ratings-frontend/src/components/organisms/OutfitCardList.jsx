@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import OutfitPostCard from "../molecules/OutfitCard";
 import Select from "@/components/atoms/Select";
 import { getAllStyles } from "@/services/styleFiltersService";
 import SearchBar from "../atoms/SearchBar";
 
 export default function OutfitCardList({
-  outfits,
+  outfits: initialOutfits,
   showControls = false,
   onDelete,
   compact = false,
@@ -20,6 +20,17 @@ export default function OutfitCardList({
 
   function handleSearch(newSearch) {
     setSearch(newSearch);
+  }
+
+  const [outfits, setOutfits] = useState(initialOutfits || []);
+  useEffect(() => {
+    setOutfits(initialOutfits || []);
+  }, [initialOutfits]);
+
+  function handleRatingUpdated(outfitId, updatedData) {
+    setOutfits((prev) =>
+      prev.map((o) => ((o.id || o.outfitId) === outfitId ? updatedData : o)),
+    );
   }
 
   useEffect(() => {
@@ -64,10 +75,11 @@ export default function OutfitCardList({
       </div>
     );
   }
-  // Different columns for explore and user pages
+
   const columnClassName = compact
     ? "col-span-12 sm:col-span-12 md:col-span-12 lg:col-span-6 xl:col-span-4 h-full"
     : "col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 h-full";
+
   return (
     <main className="px-6 mx-auto max-w-7xl">
       <div className="flex flex-row items-center gap-4">
@@ -111,6 +123,7 @@ export default function OutfitCardList({
                 outfitId={outfit.outfitId || outfit.id}
                 isCreator={showControls}
                 onDelete={(id) => onDelete?.(id)}
+                onRatingUpdated={handleRatingUpdated}
               />
             </div>
           ))}

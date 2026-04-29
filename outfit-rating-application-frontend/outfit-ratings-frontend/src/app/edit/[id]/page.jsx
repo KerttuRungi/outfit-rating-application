@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
 import { updateOutfit } from "@/services/mutateOutfit";
 import { getOutfitById, getImageUrl } from "@/services/getOutfit";
@@ -22,6 +23,13 @@ export default function EditOutfitPage() {
   const [nameError, setNameError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/auth/login");
+    }
+  }, [authLoading, user, router]);
 
   const allowedImageTypes = [
     "image/jpeg",
@@ -33,6 +41,9 @@ export default function EditOutfitPage() {
   // Load existing outfit data
   useEffect(() => {
     if (!id) return;
+    if (authLoading) return;
+    if (!user) return;
+
     let mounted = true;
     setFetching(true);
     getOutfitById(id)
@@ -48,7 +59,7 @@ export default function EditOutfitPage() {
       .catch((e) => setError("Failed to load outfit"))
       .finally(() => setFetching(false));
     return () => (mounted = false);
-  }, [id]);
+  }, [id, authLoading, user]);
 
   function handleImageChange(e) {
     const file = e.target.files[0];

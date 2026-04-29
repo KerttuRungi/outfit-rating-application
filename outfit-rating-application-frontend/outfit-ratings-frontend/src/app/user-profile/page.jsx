@@ -28,7 +28,9 @@ export default function UserProfilePage() {
         }
       } catch (err) {
         console.error("Error loading profile:", err);
-        setError("Failed to load your profile or outfits: " + (err?.message || err));
+        setError(
+          "Failed to load your profile or outfits: " + (err?.message || err),
+        );
       }
     };
 
@@ -43,6 +45,14 @@ export default function UserProfilePage() {
       console.error("Delete failed", err);
       setError("Failed to delete outfit");
     }
+  }
+
+  if (authLoading || !user) {
+    return (
+      <main className="min-h-screen">
+        <p className="text-white text-lg">Loading...</p>
+      </main>
+    );
   }
 
   return (
@@ -63,20 +73,12 @@ export default function UserProfilePage() {
               </div>
             )}
 
-            {authLoading ? (
-              <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-white text-lg">Loading your profile...</p>
-                </div>
-              </div>
-            ) : (
-              <OutfitCardList
-                outfits={outfits}
-                showControls={true}
-                onDelete={handleDelete}
-                compact={true}
-              />
-            )}
+            <OutfitCardList
+              outfits={outfits}
+              showControls={true}
+              onDelete={handleDelete}
+              compact={true}
+            />
           </div>
         </div>
       </div>

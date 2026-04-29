@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createOutfit } from "@/services/mutateOutfit";
@@ -23,6 +24,13 @@ export default function CreateOutfitPage() {
   const [nameError, setNameError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/auth/login");
+    }
+  }, [authLoading, user, router]);
 
   const allowedImageTypes = [
     "image/jpeg",
@@ -30,8 +38,12 @@ export default function CreateOutfitPage() {
     "image/png",
     "image/webp",
   ];
+  W;
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) return;
+
     async function fetchStyles() {
       try {
         const data = await getAllStyles();
@@ -47,7 +59,17 @@ export default function CreateOutfitPage() {
       }
     }
     fetchStyles();
-  }, []);
+  }, [authLoading, user]);
+
+  if (authLoading || !user) {
+    return (
+      <main className="min-h-screen w-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-white text-lg">Loading your profile...</p>
+        </div>
+      </main>
+    );
+  }
 
   function handleImageChange(e) {
     const file = e.target.files[0];

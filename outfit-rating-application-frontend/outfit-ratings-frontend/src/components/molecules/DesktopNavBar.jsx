@@ -30,9 +30,11 @@ export default function DesktopNavBar() {
     <nav className="fixed top-0 w-full z-50">
       <div className="bg-(--dpink)/50 backdrop-blur-md border-b border-white/10 shadow-xl">
         <div className="px-6 mx-auto grid grid-cols-3 items-center h-16">
-
           <div className="flex items-center">
-            <Link href="/" className="text-white hover:text-(--lpink-light) transition-colors">
+            <Link
+              href="/"
+              className="text-white hover:text-(--lpink-light) transition-colors"
+            >
               <Star size={22} className="hover-spin fill-current" />
             </Link>
           </div>
@@ -74,26 +76,26 @@ export default function DesktopNavBar() {
               </button>
             )}
             {user && (
-            <div
-              className="relative"
-              onMouseEnter={() => setShowMenu(true)}
-              onMouseLeave={() => setShowMenu(false)}
-            >
-              <Link
-                href="/user-profile"
-                className="flex items-center justify-center h-10 w-10 rounded-full border border-white/20 bg-white/5 hover:bg-white/20 hover:border-white/40 transition-all"
+              <div
+                className="relative"
+                onMouseEnter={() => setShowMenu(true)}
+                onMouseLeave={() => setShowMenu(false)}
               >
-                <User size={18} className="text-white" />
-              </Link>
+                <Link
+                  href="/user-profile"
+                  className="inline-flex items-center justify-center h-10 w-10 rounded-full transition-all bg-white/10 hover:bg-white/20 "
+                >
+                  <User size={18} className="text-white" />
+                </Link>
 
-              {showMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                  <div className="px-4 py-2 text-xs text-(--gray) truncate">
-                    {user.email}
+                {showMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                    <div className="px-4 py-2 text-xs text-(--gray) truncate">
+                      {user.email}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
             )}
           </div>
         </div>

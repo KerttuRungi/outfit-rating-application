@@ -9,5 +9,6 @@ export async function rateOutfit(id, rating) {
   return apiRequest(url, {
     method: "POST",
     body: JSON.stringify({ value: rating }),
+    cache: "no-store",
   });
 }
