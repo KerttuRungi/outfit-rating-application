@@ -8,7 +8,11 @@ export async function getAllOutfits(cookieHeader) {
 }
 
 export async function getOutfitById(id, cookieHeader) {
-  return apiRequest(`${OUTFITS_URL}/${id}`, { method: "GET" }, cookieHeader);
+  return apiRequest(
+    `${OUTFITS_URL}/${id}`,
+    { method: "GET", cache: "no-store" },
+    cookieHeader,
+  );
 }
 
 export async function getOutfitsByCreatorId(creatorId, cookieHeader) {

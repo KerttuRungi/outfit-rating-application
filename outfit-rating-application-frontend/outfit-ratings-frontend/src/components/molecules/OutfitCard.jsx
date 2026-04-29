@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import { rateOutfit } from "@/services/ratingService";
 import { getImageUrl } from "../../services/getOutfit";
 import DeleteButton from "@/components/atoms/DeleteButton";
 import EditButton from "@/components/atoms/EditButton";
+import { getOutfitById } from "@/services/getOutfit";
 
 export default function OutfitPostCard({
   id,
@@ -21,8 +22,9 @@ export default function OutfitPostCard({
   const [loading, setLoading] = useState(!outfit && !!id);
   const [error, setError] = useState(null);
   const [index, setIndex] = useState(0);
-  const [rating, setRating] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
+  const requestRef = useRef(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -54,13 +56,11 @@ export default function OutfitPostCard({
     }
   }
 
-  // Update rating state when data changes
+  // Reset image index when data changes
   useEffect(() => {
-    setRating(averageRating);
     setIndex(0);
-  }, [data, averageRating]);
+  }, [data]);
 
-  //Navigating between imgages, if there are multiple
   function prevImage(e) {
     e?.stopPropagation();
     if (imageUrls.length === 0) return;
@@ -74,13 +74,26 @@ export default function OutfitPostCard({
   }
 
   async function handleRatingChange(newRating) {
-    setRating(newRating);
-    if (!outfitId) return;
+    if (submitting) return;
+
+    const requestId = ++requestRef.current;
+    setSubmitting(true);
+
     try {
       await rateOutfit(outfitId, newRating);
-      onRatingUpdated?.(newRating);
+      const fresh = await getOutfitById(outfitId);
+
+      // only apply latest request result
+      if (requestId === requestRef.current) {
+        setData(fresh);
+        onRatingUpdated?.(outfitId, fresh);
+      }
     } catch (err) {
       console.error(err);
+    } finally {
+      if (requestId === requestRef.current) {
+        setSubmitting(false);
+      }
     }
   }
 
@@ -102,21 +115,20 @@ export default function OutfitPostCard({
             <DeleteButton id={outfitId} onDelete={onDelete} />
           </div>
         )}
+
         {imageUrls.length > 0 ? (
-          <>
-            <div className="relative w-full h-full flex items-center justify-center">
-              <Image
-                src={getImageUrl(imageUrls[index])}
-                alt={name}
-                fill
-                sizes="(max-width: 640px) 100vw, 25vw"
-                className="object-cover rounded-xl"
-                loading="eager"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/30 to-transparent rounded-b-xl pointer-events-none" />
-            </div>
-          </>
+          <div className="relative w-full h-full flex items-center justify-center">
+            <Image
+              src={getImageUrl(imageUrls[index])}
+              alt={name}
+              fill
+              sizes="(max-width: 640px) 100vw, 25vw"
+              className="object-cover rounded-xl"
+              loading="eager"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/30 to-transparent rounded-b-xl pointer-events-none" />
+          </div>
         ) : (
           <div className="text-gray-400">No image</div>
         )}
@@ -148,7 +160,7 @@ export default function OutfitPostCard({
       </div>
 
       <div className="p-4">
-        <div className="flex items-center justify-between m">
+        <div className="flex items-center justify-between">
           <p className="text-base font-medium text-gray-700 mb-2 capitalize tracking-tight flex-1 truncate">
             {description}
           </p>
@@ -156,6 +168,7 @@ export default function OutfitPostCard({
             {styleName}
           </p>
         </div>
+
         <div className="gap-4" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center gap-2 text-sm text-gray-700">
             <span className="font-semibold">Average:</span>
@@ -164,12 +177,14 @@ export default function OutfitPostCard({
             </span>
             <Star size={16} className="text-[var(--dpink)]" />
           </div>
+
           <div className="flex items-center justify-between gap-2 mt-2">
             <RatingStars
-              outfitId={outfitId}
-              value={rating}
+              value={averageRating}
               onChange={handleRatingChange}
+              readOnly={submitting}
             />
+
             <div className="text-xs text-gray-500 whitespace-nowrap">
               {ratingsCount} {ratingsCount === 1 ? "rating" : "ratings"}
             </div>
