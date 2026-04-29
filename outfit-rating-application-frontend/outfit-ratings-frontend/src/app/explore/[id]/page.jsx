@@ -30,7 +30,7 @@ export default function OutfitDetailPage() {
   if (error) return <div className="text-center p-8 text-red-600">{error}</div>;
   if (!outfit) return <div className="text-center p-8">Outfit not found</div>;
 
-  const { name, description, averageRating, ratingsCount, imageUrls } = outfit;
+  const { name, description, averageRating, ratingsCount, imageUrls, styleName } = outfit;
 
   // function prevImage() {
   //   if (!imageUrls || imageUrls.length === 0) return;
@@ -42,7 +42,7 @@ export default function OutfitDetailPage() {
   // }
 
   return (
-    <main className="min-h-screen w-full flex flex-col bg-transparent">
+    <main className="min-h-screen w-full flex flex-col bg-transparent mt-20">
       <div className="flex-1 flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-x-12 px-4 md:px-12 py-8 md:py-10 max-w-[1200px] mx-auto w-full">
         <div className="w-full md:col-span-5 flex flex-col">
           <div className="relative bg-white/80 rounded-2xl h-[280px] md:h-[520px] w-full flex items-center justify-center overflow-hidden shadow-md">
@@ -114,7 +114,7 @@ export default function OutfitDetailPage() {
           <div className="bg-white/80 rounded-2xl px-6 py-4 text-gray-800">
             <span className="font-semibold">Style</span>
             <div className="mt-2 text-sm text-gray-700">
-              Casual / Street (placeholder)
+              {styleName ?? "No style specified"}
             </div>
           </div>
         </div>

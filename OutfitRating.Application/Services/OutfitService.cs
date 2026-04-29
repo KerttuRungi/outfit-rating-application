@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,11 +15,8 @@ namespace OutfitRating.Application.Services
     {
         private readonly AppDbContext _context;
         private readonly IFileService _fileService;
-        public OutfitService
-        (
-            AppDbContext context,
-            IFileService fileService
-        )
+
+        public OutfitService(AppDbContext context, IFileService fileService)
         {
             _context = context;
             _fileService = fileService;
@@ -27,8 +24,9 @@ namespace OutfitRating.Application.Services
 
         public async Task<IEnumerable<OutfitDto>> GetAllOutfitsAsync()
         {
-            var outfits = await _context.OutfitRating
-                .Include(o => o.Images)
+            var outfits = await _context
+                .OutfitRating.Include(o => o.Images)
+                .Include(o => o.Style)
                 .ToListAsync();
 
             return outfits.Select(o => new OutfitDto
@@ -38,14 +36,17 @@ namespace OutfitRating.Application.Services
                 Description = o.Description,
                 AverageRating = o.AverageRating,
                 RatingsCount = o.RatingsCount,
-                ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>()
+                StyleId = o.StyleId,
+                StyleName = o.Style?.Name,
+                ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>(),
             });
         }
 
         public async Task<OutfitDto> GetOutfitByIdAsync(Guid id)
         {
-            var o = await _context.OutfitRating
-                .Include(x => x.Images)
+            var o = await _context
+                .OutfitRating.Include(x => x.Images)
+                .Include(x => x.Style)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (o == null)
@@ -60,15 +61,18 @@ namespace OutfitRating.Application.Services
                 Description = o.Description,
                 AverageRating = o.AverageRating,
                 RatingsCount = o.RatingsCount,
-                ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>()
+                StyleId = o.StyleId,
+                ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>(),
+                StyleName = o.Style?.Name,
             };
         }
 
         public async Task<IEnumerable<OutfitDto>> GetOutfitsByCreatorIdAsync(string creatorId)
         {
-            var outfits = await _context.OutfitRating
-                .Where(o => o.CreatorId == creatorId)
+            var outfits = await _context
+                .OutfitRating.Where(o => o.CreatorId == creatorId)
                 .Include(o => o.Images)
+                .Include(o => o.Style)
                 .ToListAsync();
             return outfits.Select(o => new OutfitDto
             {
@@ -77,9 +81,12 @@ namespace OutfitRating.Application.Services
                 Description = o.Description,
                 AverageRating = o.AverageRating,
                 RatingsCount = o.RatingsCount,
-                ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>()
+                StyleId = o.StyleId,
+                StyleName = o.Style?.Name,
+                ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>(),
             });
         }
+
         public async Task<OutfitDto> CreateOutfitAsync(OutfitDto dto, string creatorId)
         {
             var uploadedFiles = new List<string>();
@@ -87,6 +94,12 @@ namespace OutfitRating.Application.Services
             if (dto.Images != null && dto.Images.Any())
             {
                 uploadedFiles = await _fileService.UploadImagesAsync(dto.Images);
+            }
+
+            // validate if style exists
+            if (dto.StyleId <= 0 || !await _context.StyleFilters.AnyAsync(s => s.Id == dto.StyleId))
+            {
+                throw new Exception("Invalid or missing style selected");
             }
 
             var o = new Outfit
@@ -97,23 +110,29 @@ namespace OutfitRating.Application.Services
                 Description = dto.Description,
                 AverageRating = dto.AverageRating,
                 RatingsCount = dto.RatingsCount,
+                StyleId = dto.StyleId,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
             };
 
             foreach (var fileName in uploadedFiles)
             {
-                o.Images.Add(new OutfitImages
-                {
-                    Id = Guid.NewGuid(),
-                    Name = fileName,
-                    FilePath = "/images/" + fileName,
-                    OutfitId = o.Id
-                });
+                o.Images.Add(
+                    new OutfitImages
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = fileName,
+                        FilePath = "/images/" + fileName,
+                        OutfitId = o.Id,
+                    }
+                );
             }
 
             _context.OutfitRating.Add(o);
             await _context.SaveChangesAsync();
+
+            // Load style name before to avoid extra db calls
+            await _context.Entry(o).Reference(x => x.Style).LoadAsync();
 
             return new OutfitDto
             {
@@ -121,14 +140,17 @@ namespace OutfitRating.Application.Services
                 Name = o.Name,
                 Description = o.Description,
                 AverageRating = o.AverageRating,
-                RatingsCount = o.RatingsCount
+                RatingsCount = o.RatingsCount,
+                StyleId = o.StyleId,
+                StyleName = o.Style?.Name,
             };
         }
 
         public async Task<OutfitDto> UpdateOutfitAsync(OutfitDto dto)
         {
-            var o = await _context.OutfitRating
-                .Include(x => x.Images)
+            var o = await _context
+                .OutfitRating.Include(x => x.Images)
+                .Include(x => x.Style)
                 .FirstOrDefaultAsync(x => x.Id == dto.Id);
             if (o == null)
             {
@@ -139,6 +161,11 @@ namespace OutfitRating.Application.Services
             o.Description = dto.Description;
             o.AverageRating = dto.AverageRating;
             o.RatingsCount = dto.RatingsCount;
+            if (dto.StyleId <= 0 || !await _context.StyleFilters.AnyAsync(s => s.Id == dto.StyleId))
+            {
+                throw new Exception("Invalid or missing style selected");
+            }
+            o.StyleId = dto.StyleId;
             o.UpdatedAt = DateTime.UtcNow;
 
             if (dto.Images != null && dto.Images.Any())
@@ -161,7 +188,7 @@ namespace OutfitRating.Application.Services
                         Id = Guid.NewGuid(),
                         Name = fileName,
                         FilePath = "/images/" + fileName,
-                        OutfitId = o.Id
+                        OutfitId = o.Id,
                     };
                     _context.Set<OutfitImages>().Add(newImage);
                     o.Images.Add(newImage);
@@ -173,19 +200,25 @@ namespace OutfitRating.Application.Services
                 await _context.SaveChangesAsync();
             }
 
+            await _context.Entry(o).Reference(x => x.Style).LoadAsync();
+
             return new OutfitDto
             {
                 Id = o.Id,
                 Name = o.Name,
                 Description = o.Description,
                 AverageRating = o.AverageRating,
-                RatingsCount = o.RatingsCount
+                RatingsCount = o.RatingsCount,
+                StyleId = o.StyleId,
+                StyleName = o.Style?.Name,
             };
         }
+
         public async Task<OutfitDto> DeleteOutfitAsync(OutfitDto dto)
         {
-            var o = await _context.OutfitRating
-                .Include(x => x.Images)
+            var o = await _context
+                .OutfitRating.Include(x => x.Images)
+                .Include(x => x.Style)
                 .FirstOrDefaultAsync(x => x.Id == dto.Id);
             if (o == null)
             {
@@ -198,6 +231,9 @@ namespace OutfitRating.Application.Services
                 await _fileService.DeleteImagesAsync(oldFileNames);
             }
 
+            await _context.Entry(o).Reference(x => x.Style).LoadAsync();
+            var styleName = o.Style?.Name;
+
             _context.OutfitRating.Remove(o);
             await _context.SaveChangesAsync();
 
@@ -207,8 +243,28 @@ namespace OutfitRating.Application.Services
                 Name = o.Name,
                 Description = o.Description,
                 AverageRating = o.AverageRating,
-                RatingsCount = o.RatingsCount
+                RatingsCount = o.RatingsCount,
+                StyleId = o.StyleId,
+                StyleName = styleName,
             };
+        }
+
+        public async Task<IEnumerable<OutfitDto>> GetOutfitsByStyleAsync(int styleId)
+        {
+            var outfits = await _context
+                .OutfitRating.Where(o => o.StyleId == styleId)
+                .Include(o => o.Images)
+                .Include(o => o.Style)
+                .ToListAsync();
+
+            return outfits.Select(o => new OutfitDto
+            {
+                Id = o.Id,
+                Name = o.Name,
+                StyleId = o.StyleId,
+                StyleName = o.Style?.Name,
+                ImageUrls = o.Images?.Select(img => img.FilePath).ToList() ?? new List<string>(),
+            });
         }
     }
 }

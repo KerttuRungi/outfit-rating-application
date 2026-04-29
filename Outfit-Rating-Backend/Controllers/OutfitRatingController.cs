@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.Authorization;
 using OutfitRating.Application.Dtos;
 using OutfitRating.Application.Interfaces;
 using OutfitRating.Application.Services;
@@ -14,14 +13,17 @@ namespace Outfit_Rating_Backend.Controllers
     [ApiController]
     [EnableRateLimiting("fixed")]
     [Authorize]
-
     public class OutfitRatingController : ControllerBase
     {
         private readonly AppDbContext _context;
         private readonly IOutfitService _outfitService;
         private readonly IRatingService _ratingService;
 
-        public OutfitRatingController(AppDbContext context, IOutfitService outfitRatingService, IRatingService ratingService)
+        public OutfitRatingController(
+            AppDbContext context,
+            IOutfitService outfitRatingService,
+            IRatingService ratingService
+        )
         {
             _context = context;
             _outfitService = outfitRatingService;
@@ -51,11 +53,13 @@ namespace Outfit_Rating_Backend.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-            new { message = "An error occurred while creating the item." });
-
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while creating the item." }
+                );
             }
         }
+
         [HttpGet("{Id:guid}")]
         public async Task<IActionResult> GetOutfitById(Guid Id)
         {
@@ -70,10 +74,13 @@ namespace Outfit_Rating_Backend.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { message = "An error occurred while retrieving the outfit." });
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while retrieving the outfit." }
+                );
             }
         }
+
         [HttpGet("creator/{creatorId}")]
         public async Task<IActionResult> GetOutfitsByCreatorId(string creatorId)
         {
@@ -149,6 +156,7 @@ namespace Outfit_Rating_Backend.Controllers
             return Ok(deletedOutfit);
         }
 
+        // Endpoint for rating an outfit
         [HttpPost("{Id:guid}/rating")]
         public async Task<IActionResult> Rate([FromRoute] Guid Id, [FromBody] RatingsDto dto)
         {
@@ -165,6 +173,14 @@ namespace Outfit_Rating_Backend.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        // Endpoint for filtering outfits by style
+        [HttpGet("style/{styleId:int}")]
+        public async Task<IActionResult> GetByStyle(int styleId)
+        {
+            var outfits = await _outfitService.GetOutfitsByStyleAsync(styleId);
+            return Ok(outfits);
         }
     }
 }

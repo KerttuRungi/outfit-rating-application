@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createOutfit } from "@/services/mutateOutfit";
+import { getAllStyles } from "@/services/styleFiltersService";
+import Select from "@/components/atoms/Select";
 import { Upload, X } from "lucide-react";
 
 export default function CreateOutfitPage() {
@@ -11,6 +14,9 @@ export default function CreateOutfitPage() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [selectedStyle, setSelectedStyle] = useState(null);
+  const [styles, setStyles] = useState([]);
+  const [stylesLoading, setStylesLoading] = useState(true);
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -18,6 +24,13 @@ export default function CreateOutfitPage() {
   const [nameError, setNameError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/auth/login");
+    }
+  }, [authLoading, user, router]);
 
   const allowedImageTypes = [
     "image/jpeg",
@@ -25,6 +38,38 @@ export default function CreateOutfitPage() {
     "image/png",
     "image/webp",
   ];
+  W;
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) return;
+
+    async function fetchStyles() {
+      try {
+        const data = await getAllStyles();
+        const styleOptions = data.map((style) => ({
+          value: style.id,
+          label: style.name,
+        }));
+        setStyles(styleOptions);
+      } catch (err) {
+        console.error("Failed to fetch styles", err);
+      } finally {
+        setStylesLoading(false);
+      }
+    }
+    fetchStyles();
+  }, [authLoading, user]);
+
+  if (authLoading || !user) {
+    return (
+      <main className="min-h-screen w-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-white text-lg">Loading your profile...</p>
+        </div>
+      </main>
+    );
+  }
 
   function handleImageChange(e) {
     const file = e.target.files[0];
@@ -105,6 +150,10 @@ export default function CreateOutfitPage() {
       setDescriptionError("Description cannot exceed 200 characters");
       hasError = true;
     }
+    if (!selectedStyle) {
+      setError("Style is required");
+      hasError = true;
+    }
     if (hasError) return;
 
     setLoading(true);
@@ -114,7 +163,12 @@ export default function CreateOutfitPage() {
         setLoading(false);
         return;
       }
-      await createOutfit({ name, description, imageFile: image });
+      await createOutfit({
+        name,
+        description,
+        styleId: selectedStyle,
+        imageFile: image,
+      });
       router.push("/explore");
     } catch (err) {
       setError("Failed to create outfit");
@@ -124,7 +178,7 @@ export default function CreateOutfitPage() {
   }
 
   return (
-    <main className="min-h-screen w-full flex flex-col bg-transparent">
+    <main className="min-h-screen w-full flex flex-col bg-transparent mt-20">
       <form
         onSubmit={handleSubmit}
         noValidate
@@ -204,6 +258,18 @@ export default function CreateOutfitPage() {
                 {nameError}
               </p>
             )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-white text-sm font-semibold ml-1">
+              Style
+            </label>
+            <Select
+              placeholder="Choose a style"
+              options={styles}
+              value={selectedStyle}
+              onChange={setSelectedStyle}
+            />
           </div>
 
           <div className="flex flex-col gap-2">

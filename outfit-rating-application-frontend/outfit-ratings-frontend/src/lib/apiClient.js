@@ -21,7 +21,7 @@ export async function apiRequest(endpoint, options = {}, cookieHeader = null) {
 
   if (res.status === 401) {
     if (typeof window !== "undefined") {
-      window.location.href = "/login";
+      window.location.href = "/auth/login";
     }
     throw new Error("Unauthorized");
   }
