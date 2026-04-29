@@ -5,10 +5,10 @@ import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import RatingStars from "../atoms/RatingStars";
-import { rateOutfit } from "@/services/ratingService";
 import { getImageUrl } from "../../services/getOutfit";
 import DeleteButton from "@/components/atoms/DeleteButton";
 import EditButton from "@/components/atoms/EditButton";
+import { rateOutfit } from "@/services/ratingService";
 import { getOutfitById } from "@/services/getOutfit";
 
 export default function OutfitPostCard({
@@ -80,13 +80,17 @@ export default function OutfitPostCard({
     setSubmitting(true);
 
     try {
-      await rateOutfit(outfitId, newRating);
-      const fresh = await getOutfitById(outfitId);
+      const res = await rateOutfit(outfitId, newRating);
 
-      // only apply latest request result
       if (requestId === requestRef.current) {
-        setData(fresh);
-        onRatingUpdated?.(outfitId, fresh);
+        const updated = {
+          ...data,
+          averageRating: res.averageRating,
+          ratingsCount: res.ratingsCount,
+        };
+
+        setData(updated);
+        onRatingUpdated?.(outfitId, updated);
       }
     } catch (err) {
       console.error(err);

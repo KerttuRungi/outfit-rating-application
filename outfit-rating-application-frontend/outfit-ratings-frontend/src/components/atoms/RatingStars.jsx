@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Star, Loader2 } from "lucide-react";
-import { rateOutfit } from "@/services/ratingService";
+import React, { useState, useEffect } from "react";
+import { Star } from "lucide-react";
 
 export default function RatingStars({
   outfitId,
@@ -12,12 +11,18 @@ export default function RatingStars({
   readOnly = false,
 }) {
   const [hover, setHover] = useState(0);
+  const [displayValue, setDisplayValue] = useState(value); // Updates UI before DB change
 
-  const activeValue = hover || value;
+  useEffect(() => {
+    setDisplayValue(value);
+  }, [value]);
+
+  const activeValue = hover || displayValue;
   const isInteractable = !readOnly;
 
-  async function handleRate(v) {
+  function handleRate(v) {
     if (!isInteractable) return;
+    setDisplayValue(v);
     onChange?.(v);
   }
 
@@ -41,7 +46,7 @@ export default function RatingStars({
             <Star
               size={size}
               className={`transition-colors ${
-                active ? "text-(--dpink)" : "text-lgray"
+                active ? "text-[var(--dpink)]" : "text-lgray"
               }`}
             />
           </button>
