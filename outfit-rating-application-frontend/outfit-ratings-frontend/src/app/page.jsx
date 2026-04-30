@@ -56,8 +56,7 @@ export default function HomePage() {
             <div className="max-w-md w-full text-right">
               <h3 className="text-xl font-semibold">Discover & Inspire</h3>
               <p className="mt-3 text-sm text-white/80">
-                Explore posts from others 
-                and share your own to your profile.
+                Explore posts from others and share your own to your profile.
               </p>
             </div>
 
@@ -72,11 +71,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full bg-white text-gray py-20">
+      <section className="w-full bg-white min-h-[550px] flex items-center text-gray py-20">
         <div className="container mx-auto px-6 lg:px-12">
-          <h2 className="text-3xl font-bold mb-8 text-(--gray)">
-            Features
-          </h2>
+          <h2 className="text-3xl font-bold mb-8 text-(--gray)">Features</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <FeatureCard Icon={Plus} title="Share">

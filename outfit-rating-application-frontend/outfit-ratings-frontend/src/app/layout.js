@@ -1,5 +1,6 @@
 // global layout
 import DesktopNavBar from "@/components/molecules/DesktopNavBar";
+import Footer from "@/components/molecules/Footer";
 import "./globals.css";
 import { Montserrat } from "next/font/google";
 
@@ -11,6 +12,7 @@ export default function RootLayout({ children }) {
       <body className={montserrat.className}>
         <DesktopNavBar />
         <div className="min-h-screen">{children}</div>
+        <Footer />
       </body>
     </html>
   );
