@@ -21,15 +21,15 @@ export default function HomePage() {
               <h1 className="text-7xl leading-[0.95] font-extrabold tracking-tight drop-shadow-lg">
                 SHARE
                 <br />
-                RATE
+                YOUR
                 <br />
-                INSPIRE
+                STYLE
               </h1>
 
               <p className="max-w-xl text-lg text-white/80 mt-4">
-                Share posts of your outfits with others, get reviews from
-                passionate fashion lovers, view your favorite styles, and grow
-                your profile.
+                Share posts of your outfits, get reviews from other users.
+                Explore their posts, view your favorite styles, and get
+                inspired.
               </p>
 
               <div className="mt-6">
