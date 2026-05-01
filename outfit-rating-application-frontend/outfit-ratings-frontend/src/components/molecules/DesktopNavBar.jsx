@@ -27,55 +27,54 @@ export default function DesktopNavBar() {
   };
 
   return (
-    <nav className="w-full">
-      <div className="bg-[var(--dpink)] backdrop-blur-sm">
-        <div className="px-5 mx-auto grid grid-cols-3 items-center h-14 shadow-2xl">
+    <nav className="fixed top-0 w-full z-50">
+      <div className="bg-(--dpink)/50 backdrop-blur-md border-b border-white/10 shadow-xl">
+        <div className="px-6 mx-auto grid grid-cols-3 items-center h-16">
           <div className="flex items-center">
             <Link
               href="/"
-              className="inline-flex items-center justify-center text-white"
+              className="text-white hover:text-(--lpink-light) transition-colors"
             >
-              <Star size={20} className="hover-spin" />
+              <Star size={22} className="hover-spin fill-current" />
             </Link>
           </div>
-          <div className="flex items-center gap-10 justify-self-center">
+
+          <div className="flex items-center gap-8 justify-self-center">
             {menuItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className="text-white hover:text-[var(--lpink)] font-medium tracking-wider"
+                className="text-white/80 hover:text-white text-sm font-semibold tracking-widest uppercase transition-all"
               >
                 {item.label}
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-3 justify-self-end">
-            <div className="flex items-center gap-3">
-              {!user ? (
-                <>
-                  <Link
-                    href="/auth/login"
-                    className="inline-flex items-center h-8 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    className="inline-flex items-center h-8 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-                  >
-                    Register
-                  </Link>
-                </>
-              ) : (
-                <button
-                  onClick={handleLogout}
-                  className="inline-flex items-center h-8 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+          <div className="flex items-center gap-5 justify-self-end">
+            {!user ? (
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/auth/login"
+                  className="text-xs font-bold text-white/70 hover:text-white border border-white/20 px-4 py-1.5 rounded-full transition-all"
                 >
-                  Logout
-                </button>
-              )}
-            </div>
+                  Login
+                </Link>
+                <Link
+                  href="/auth/register"
+                  className="text-xs font-bold text-white/70 hover:text-white border border-white/20 px-4 py-1.5 rounded-full transition-all"
+                >
+                  Register
+                </Link>
+              </div>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="text-xs font-bold text-white/70 hover:text-white border border-white/20 px-4 py-1.5 rounded-full transition-all"
+              >
+                Logout
+              </button>
+            )}
             {user && (
               <div
                 className="relative"
@@ -90,8 +89,8 @@ export default function DesktopNavBar() {
                 </Link>
 
                 {showMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-gray-800">
-                    <div className="px-4 py-2 text-xs text-gray-500 truncate">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                    <div className="px-4 py-2 text-xs text-(--gray) truncate">
                       {user.email}
                     </div>
                   </div>

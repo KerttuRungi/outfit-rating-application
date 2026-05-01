@@ -13,9 +13,9 @@ export default function UserProfileSidebar({ user, outfits = [] }) {
 
   return (
     <section className="bg-white w-full md:w-75 sticky top-0 z-30 md:relative md:min-h-screen p-4 md:p-6 shadow-md">
-      <div className="flex md:flex-col flex-row items-center md:items-start justify-between gap-4 md:gap-6">
+      <div className="flex md:flex-col flex-row items-center md:items-start justify-between gap-4 md:gap-6 pt-16">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center bg-(--dpink)">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center bg-(--dpink)">
             <User size={24} className="text-white" />
           </div>
           <div className="hidden md:block">

@@ -61,7 +61,7 @@ export default function UserProfilePage() {
         <UserProfileSidebar user={user} outfits={outfits || []} />
 
         <div className="flex-1 linear-gradient">
-          <div className="px-6 mx-auto max-w-7xl">
+          <div className="px-6 mx-auto max-w-7xl pt-16 md:pt-20">
             <div className="ml-6">
               <h1 className="text-3xl font-bold text-white mt-8">My Outfits</h1>
               <p className="text-white mt-2 mb-2">View and manage your posts</p>

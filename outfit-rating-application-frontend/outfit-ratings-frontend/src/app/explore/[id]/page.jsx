@@ -30,7 +30,14 @@ export default function OutfitDetailPage() {
   if (error) return <div className="text-center p-8 text-red-600">{error}</div>;
   if (!outfit) return <div className="text-center p-8">Outfit not found</div>;
 
-  const { name, description, averageRating, ratingsCount, imageUrls, styleName } = outfit;
+  const {
+    name,
+    description,
+    averageRating,
+    ratingsCount,
+    imageUrls,
+    styleName,
+  } = outfit;
 
   // function prevImage() {
   //   if (!imageUrls || imageUrls.length === 0) return;
@@ -42,10 +49,10 @@ export default function OutfitDetailPage() {
   // }
 
   return (
-    <main className="min-h-screen w-full flex flex-col bg-transparent">
+    <main className="min-h-screen w-full flex flex-col bg-transparent mt-20">
       <div className="flex-1 flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-x-12 px-4 md:px-12 py-8 md:py-10 max-w-[1200px] mx-auto w-full">
         <div className="w-full md:col-span-5 flex flex-col">
-          <div className="relative bg-white/80 rounded-2xl h-[280px] md:h-[520px] w-full flex items-center justify-center overflow-hidden shadow-md">
+          <div className="relative bg-white/80 rounded-2xl h-70 md:h-130 w-full flex items-center justify-center overflow-hidden shadow-md">
             {imageUrls && imageUrls.length > 0 ? (
               <>
                 <Image
@@ -72,7 +79,7 @@ export default function OutfitDetailPage() {
                 {}
               </>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400 px-6">
+              <div className="w-full h-full flex items-center justify-center text-(--lgray) px-6">
                 No image available
               </div>
             )}
@@ -86,34 +93,30 @@ export default function OutfitDetailPage() {
             </h1>
           </div>
 
-          <div className="bg-white/80 rounded-2xl px-6 py-4 text-lg font-medium text-gray-800">
+          <div className="bg-white/80 rounded-2xl px-6 py-4 font-semibold text-gray">
             {name || "Untitled"}
           </div>
 
-          <div className="bg-white/80 rounded-2xl px-6 py-4 text-gray-800 text-base">
+          <div className="bg-white/80 rounded-2xl px-6 py-4 text-gray font-semibold">
             {description || "No description provided."}
           </div>
 
           <div className="bg-white/80 rounded-2xl px-6 py-4 flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <span className="text-gray-800 font-semibold">
-                Average rating
-              </span>
+              <span className="text-gray font-semibold">Average rating</span>
               <div className="flex items-center gap-3">
                 <RatingStars value={averageRating} readOnly size={24} />
-                <span className="text-gray-700 text-sm">
-                  {averageRating ?? 0}
-                </span>
+                <span className="text-gray text-sm">{averageRating ?? 0}</span>
               </div>
             </div>
-            <div className="text-gray-700 text-sm">
+            <div className="text-gray text-sm">
               Rated by: {ratingsCount ?? 0} users
             </div>
           </div>
 
-          <div className="bg-white/80 rounded-2xl px-6 py-4 text-gray-800">
+          <div className="bg-white/80 rounded-2xl px-6 py-4 text-gray">
             <span className="font-semibold">Style</span>
-            <div className="mt-2 text-sm text-gray-700">
+            <div className="mt-2 text-sm text-gray">
               {styleName ?? "No style specified"}
             </div>
           </div>

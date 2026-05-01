@@ -169,11 +169,11 @@ export default function EditOutfitPage() {
   }
 
   return (
-    <main className="min-h-screen w-full flex flex-col bg-transparent">
+    <main className="min-h-screen w-full flex flex-col bg-transparent mt-20">
       <form
         onSubmit={handleSubmit}
         noValidate
-        className="flex-1 flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-x-12 px-4 md:px-12 py-8 md:py-10 max-w-[1200px] mx-auto w-full"
+        className="flex-1 flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-x-12 px-4 md:px-12 py-8 md:py-10 max-w-300 mx-auto w-full"
       >
         <div className="w-full md:col-span-12 mt-4 md:mt-8 mb-2">
           <h1 className="text-3xl font-bold text-white text-center">
@@ -182,7 +182,7 @@ export default function EditOutfitPage() {
         </div>
 
         <div className="w-full md:col-span-5 flex flex-col">
-          <div className="relative  bg-white/80 rounded-2xl h-[280px] md:h-[520px] w-full flex items-center justify-center overflow-hidden shadow-md">
+          <div className="relative  bg-white/80 rounded-2xl h-70 md:h-130 w-full flex items-center justify-center overflow-hidden shadow-md">
             {imagePreview ? (
               <>
                 <Image
@@ -194,24 +194,24 @@ export default function EditOutfitPage() {
                 <button
                   type="button"
                   onClick={removeImage}
-                  className="absolute top-4 right-4 z-30 bg-white/80 hover:bg-[var(--dpink)] hover:text-white text-gray-700 rounded-full p-2 shadow-md border border-white/60 transition-colors"
+                  className="absolute top-4 right-4 z-30 bg-white/80 hover:bg-(--dpink) hover:text-white text-gray rounded-full p-2 shadow-md border border-white/60 transition-colors"
                 >
                   <X size={18} />
                 </button>
               </>
             ) : (
-              <div className="text-center text-gray-400 px-8 flex flex-col items-center">
+              <div className="text-center text-(--lgray) px-8 flex flex-col items-center">
                 {imageError ? (
                   <span className="text-red-500 font-medium">{imageError}</span>
                 ) : (
                   <>
-                    <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                      <Upload className="text-gray-500" />
+                    <div className="w-14 h-14 rounded-full bg-(--lgray) flex items-center justify-center mb-4">
+                      <Upload className="text-gray" />
                     </div>
-                    <p className="font-semibold text-lg text-gray-700">
+                    <p className="font-semibold text-lg text-gray">
                       Choose a file
                     </p>
-                    <p className="text-sm mt-2 text-gray-500">
+                    <p className="text-sm mt-2 text-(--lgray)">
                       Recommended file types: JPG and PNG
                     </p>
                   </>
@@ -230,18 +230,16 @@ export default function EditOutfitPage() {
 
         <div className="w-full md:col-span-7 flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <label className="text-white text-sm font-semibold ml-1">
-              Name
-            </label>
+            <label className="text-white font-semibold ml-1">Name</label>
             <input
               type="text"
               placeholder="Name your post"
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
-              className={`bg-white/80 rounded-2xl px-6 py-4 text-gray-700 placeholder-gray-400 border border-gray-200 focus:bg-white focus:ring-2 transition-all outline-none shadow-md ${
+              className={`bg-white/80 rounded-2xl px-6 py-4 text-gray placeholder-gray border border-gray-200 focus:bg-white focus:ring-2 transition-all outline-none shadow-md ${
                 nameError
                   ? "ring-2 ring-red-500"
-                  : "focus:border-[var(--dpink)] focus:ring-[var(--dpink)]/20"
+                  : "focus:border-(--dpink) focus:ring-(--dpink)/20"
               }`}
             />
             {nameError && (
@@ -252,18 +250,16 @@ export default function EditOutfitPage() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-white text-sm font-semibold ml-1">
-              Description
-            </label>
+            <label className="text-white font-semibold ml-1">Description</label>
             <textarea
               placeholder="Describe your outfit"
               value={description}
               onChange={(e) => handleDescriptionChange(e.target.value)}
               rows={8}
-              className={`bg-white/80 rounded-2xl px-6 py-4 text-gray-700 placeholder-gray-400 border border-gray-200 focus:bg-white focus:ring-2 resize-none transition outline-none shadow-md ${
+              className={`bg-white/80 rounded-2xl px-6 py-4 text-gray placeholder-(--gray) border border-gray-200 focus:bg-white focus:ring-2 resize-none transition outline-none shadow-md ${
                 descriptionError
                   ? "ring-2 ring-red-500"
-                  : "focus:border-[var(--dpink)] focus:ring-[var(--dpink)]/20"
+                  : "focus:border-(--dpink) focus:ring-(--dpink)/20"
               }`}
             />
             {descriptionError && (
@@ -277,7 +273,7 @@ export default function EditOutfitPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-white text-gray-700 font-bold rounded-2xl py-4 text-lg border border-gray-200 hover:bg-[var(--dpink)] hover:text-white hover:border-[var(--dpink)] disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98] shadow-md"
+              className="w-full bg-white text-gray font-bold rounded-2xl py-4 text-lg border border-gray-200 hover:bg-(--dpink) hover:text-white hover:border-(--dpink) disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98] shadow-md"
             >
               {loading ? "Saving..." : "Save changes"}
             </button>

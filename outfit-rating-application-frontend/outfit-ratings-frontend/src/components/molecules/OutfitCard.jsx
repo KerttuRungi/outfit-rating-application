@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import RatingStars from "../atoms/RatingStars";
-import { rateOutfit } from "@/services/ratingService";
 import { getImageUrl } from "../../services/getOutfit";
 import DeleteButton from "@/components/atoms/DeleteButton";
 import EditButton from "@/components/atoms/EditButton";
+import { rateOutfit } from "@/services/ratingService";
+import { getOutfitById } from "@/services/getOutfit";
 
 export default function OutfitPostCard({
   id,
@@ -21,8 +22,9 @@ export default function OutfitPostCard({
   const [loading, setLoading] = useState(!outfit && !!id);
   const [error, setError] = useState(null);
   const [index, setIndex] = useState(0);
-  const [rating, setRating] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
+  const requestRef = useRef(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -54,13 +56,11 @@ export default function OutfitPostCard({
     }
   }
 
-  // Update rating state when data changes
+  // Reset image index when data changes
   useEffect(() => {
-    setRating(averageRating);
     setIndex(0);
-  }, [data, averageRating]);
+  }, [data]);
 
-  //Navigating between imgages, if there are multiple
   function prevImage(e) {
     e?.stopPropagation();
     if (imageUrls.length === 0) return;
@@ -74,25 +74,42 @@ export default function OutfitPostCard({
   }
 
   async function handleRatingChange(newRating) {
-    setRating(newRating);
-    if (!outfitId) return;
+    if (submitting) return;
+
+    const requestId = ++requestRef.current;
+    setSubmitting(true);
+
     try {
-      await rateOutfit(outfitId, newRating);
-      onRatingUpdated?.(newRating);
+      const res = await rateOutfit(outfitId, newRating);
+
+      if (requestId === requestRef.current) {
+        const updated = {
+          ...data,
+          averageRating: res.averageRating,
+          ratingsCount: res.ratingsCount,
+        };
+
+        setData(updated);
+        onRatingUpdated?.(outfitId, updated);
+      }
     } catch (err) {
       console.error(err);
+    } finally {
+      if (requestId === requestRef.current) {
+        setSubmitting(false);
+      }
     }
   }
 
   return (
     <div
-      className="relative h-full rounded-2xl overflow-hidden shadow-xl border hover:border-[var(--dpink)] bg-white backdrop-blur-md transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl cursor-pointer"
+      className="relative h-full rounded-2xl overflow-hidden shadow-xl bg-white backdrop-blur-md transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl cursor-pointer"
       onClick={handleNavigate}
       role="button"
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
-      <div className="relative bg-gradient-to-br from-gray-100/80 to-white/60 h-96 flex items-center justify-center">
+      <div className="relative bg-gradient-to-br from-lgray/80 to-lgray/60 h-96 flex items-center justify-center">
         {isCreator && (
           <div
             className="absolute right-2 top-2 z-20 flex items-center gap-2"
@@ -102,6 +119,7 @@ export default function OutfitPostCard({
             <DeleteButton id={outfitId} onDelete={onDelete} />
           </div>
         )}
+
         {imageUrls.length > 0 ? (
           <>
             <div className="relative w-full h-full flex items-center justify-center">
@@ -110,15 +128,15 @@ export default function OutfitPostCard({
                 alt={name}
                 fill
                 sizes="(max-width: 640px) 100vw, 25vw"
-                className="object-cover rounded-xl"
+                className="object-cover rounded-t-2xl"
                 loading="eager"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/30 to-transparent rounded-b-xl pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-t-2xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
             </div>
           </>
         ) : (
-          <div className="text-gray-400">No image</div>
+          <div className="text-lgray">No image</div>
         )}
 
         {imageUrls.length > 1 && (
@@ -126,14 +144,14 @@ export default function OutfitPostCard({
             <button
               aria-label="previous image"
               onClick={prevImage}
-              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-[var(--dpink)] hover:text-white shadow-md border border-white/60 transition-colors"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-dpink hover:text-white shadow-md border border-white/60 transition-colors"
             >
               <ArrowLeft size={20} />
             </button>
             <button
               aria-label="next image"
               onClick={nextImage}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-[var(--dpink)] hover:text-white shadow-md border border-white/60 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-dpink hover:text-white shadow-md border border-white/60 transition-colors"
             >
               <ArrowRight size={20} />
             </button>
@@ -148,29 +166,32 @@ export default function OutfitPostCard({
       </div>
 
       <div className="p-4">
-        <div className="flex items-center justify-between m">
+        <div className="flex items-center justify-between">
           <p className="text-base font-medium text-gray-700 mb-2 capitalize tracking-tight flex-1 truncate">
             {description}
           </p>
-          <p className="text-xs text-gray-700 mb-2 capitalize tracking-tight ml-4 text-right">
+          <p className="text-xs text-gray mb-2 capitalize tracking-tight ml-4 text-right">
             {styleName}
           </p>
         </div>
+
         <div className="gap-4" onClick={(e) => e.stopPropagation()}>
-          <div className="flex items-center gap-2 text-sm text-gray-700">
+          <div className="flex items-center gap-2 text-sm text-gray">
             <span className="font-semibold">Average:</span>
-            <span className="text-gray-700 font-bold">
+            <span className="text-gray font-bold">
               {averageRating.toFixed(1)}
             </span>
-            <Star size={16} className="text-[var(--dpink)]" />
+            <Star size={16} className="text-dpink" />
           </div>
+
           <div className="flex items-center justify-between gap-2 mt-2">
             <RatingStars
-              outfitId={outfitId}
-              value={rating}
+              value={averageRating}
               onChange={handleRatingChange}
+              readOnly={submitting}
             />
-            <div className="text-xs text-gray-500 whitespace-nowrap">
+
+            <div className="text-xs text-dgray whitespace-nowrap">
               {ratingsCount} {ratingsCount === 1 ? "rating" : "ratings"}
             </div>
           </div>
