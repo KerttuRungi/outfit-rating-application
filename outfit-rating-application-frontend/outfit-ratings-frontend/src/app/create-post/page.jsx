@@ -8,6 +8,7 @@ import { createOutfit } from "@/services/mutateOutfit";
 import { getAllStyles } from "@/services/styleFiltersService";
 import Select from "@/components/atoms/Select";
 import { Upload, X } from "lucide-react";
+import BackButton from "@/components/atoms/BackButton";
 
 export default function CreateOutfitPage() {
   const [name, setName] = useState("");
@@ -309,6 +310,9 @@ export default function CreateOutfitPage() {
               </p>
             )}
           </div>
+        </div>
+        <div className="md:col-span-12 flex justify-end mt-2">
+          <BackButton />
         </div>
       </form>
     </main>

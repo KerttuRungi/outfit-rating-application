@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import RatingStars from "@/components/atoms/RatingStars";
 import { getOutfitById, getImageUrl } from "@/services/getOutfit";
+import BackButton from "@/components/atoms/BackButton";
 
 export default function OutfitDetailPage() {
   const params = useParams();
@@ -120,6 +121,9 @@ export default function OutfitDetailPage() {
               {styleName ?? "No style specified"}
             </div>
           </div>
+        </div>
+        <div className="md:col-span-12 flex justify-end mt-2">
+          <BackButton />
         </div>
       </div>
     </main>
