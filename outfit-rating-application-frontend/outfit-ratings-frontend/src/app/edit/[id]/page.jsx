@@ -7,6 +7,7 @@ import Image from "next/image";
 import { updateOutfit } from "@/services/mutateOutfit";
 import { getOutfitById, getImageUrl } from "@/services/getOutfit";
 import { Upload, X } from "lucide-react";
+import BackButton from "@/components/atoms/BackButton";
 
 export default function EditOutfitPage() {
   const params = useParams();
@@ -248,7 +249,6 @@ export default function EditOutfitPage() {
               </p>
             )}
           </div>
-
           <div className="flex flex-col gap-2">
             <label className="text-white font-semibold ml-1">Description</label>
             <textarea
@@ -268,7 +268,6 @@ export default function EditOutfitPage() {
               </p>
             )}
           </div>
-
           <div className="flex flex-col gap-4">
             <button
               type="submit"
@@ -283,6 +282,9 @@ export default function EditOutfitPage() {
                 {error || imageError}
               </p>
             )}
+          </div>{" "}
+          <div className="md:col-span-12 flex justify-end mt-2">
+            <BackButton href="/user-profile" />
           </div>
         </div>
       </form>
