@@ -6,6 +6,8 @@ import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
 import { updateOutfit } from "@/services/mutateOutfit";
 import { getOutfitById, getImageUrl } from "@/services/getOutfit";
+import { getAllStyles } from "@/services/styleFiltersService";
+import Select from "@/components/atoms/Select";
 import { Upload, X } from "lucide-react";
 import BackButton from "@/components/atoms/BackButton";
 
@@ -16,6 +18,9 @@ export default function EditOutfitPage() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [selectedStyle, setSelectedStyle] = useState(null);
+  const [styles, setStyles] = useState([]);
+  const [stylesLoading, setStylesLoading] = useState(true);
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -52,6 +57,7 @@ export default function EditOutfitPage() {
         if (!mounted) return;
         setName(data.name || "");
         setDescription(data.description || "");
+        setSelectedStyle(data.styleId ?? null);
         const images = data.imageUrls || [];
         if (images.length > 0) {
           setImagePreview(getImageUrl(images[0]));
@@ -61,6 +67,33 @@ export default function EditOutfitPage() {
       .finally(() => setFetching(false));
     return () => (mounted = false);
   }, [id, authLoading, user]);
+
+  // Fetch styles for select
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) return;
+
+    let mounted = true;
+    async function fetchStyles() {
+      try {
+        const data = await getAllStyles();
+        if (!mounted) return;
+        const styleOptions = data.map((style) => ({
+          value: style.id,
+          label: style.name,
+        }));
+        setStyles(styleOptions);
+      } catch (err) {
+        console.error("Failed to fetch styles", err);
+      } finally {
+        if (!mounted) return;
+        setStylesLoading(false);
+      }
+    }
+    fetchStyles();
+
+    return () => (mounted = false);
+  }, [authLoading, user]);
 
   function handleImageChange(e) {
     const file = e.target.files[0];
@@ -150,7 +183,12 @@ export default function EditOutfitPage() {
         return;
       }
 
-      await updateOutfit(id, { name, description, imageFile: image });
+      await updateOutfit(id, {
+        name,
+        description,
+        styleId: selectedStyle,
+        imageFile: image,
+      });
       router.push("/user-profile");
     } catch (err) {
       setError("Failed to update outfit");
@@ -248,6 +286,17 @@ export default function EditOutfitPage() {
                 {nameError}
               </p>
             )}
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-white text-sm font-semibold ml-1">
+              Style
+            </label>
+            <Select
+              placeholder="Choose a style"
+              options={styles}
+              value={selectedStyle}
+              onChange={setSelectedStyle}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-white font-semibold ml-1">Description</label>
