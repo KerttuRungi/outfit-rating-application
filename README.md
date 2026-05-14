@@ -16,11 +16,11 @@ A full-stack web application where users can share outfit posts, upload images, 
 
 ## Tech Stack
 
-| Backend | ASP.NET Core Web API (.NET 8, Clean Architecture) |
-| Frontend | Next.js (App Router), React, Tailwind CSS, Lucide Icons |
-| Testing | Swagger UI (Backend API), Jest (Frontend) |
-| Database | SQL Server + Entity Framework Core |
-| Auth | ASP.NET Identity (cookie-based) |
+- Backend: ASP.NET Core Web API  
+- Frontend: Next.js (App Router), React, Tailwind CSS, Lucide Icons 
+- Testing: Swagger UI (Backend API), Jest (Frontend) 
+- Database: SQL Server + Entity Framework Core 
+- Auth: ASP.NET Identity (cookie-based) 
 
 ---
 
